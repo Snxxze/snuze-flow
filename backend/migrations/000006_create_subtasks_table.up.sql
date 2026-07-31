@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS subtasks (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    task_id UUID NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    is_done BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_subtasks_task ON subtasks(task_id);
