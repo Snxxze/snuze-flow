@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"log"
+	"os"
 
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
@@ -15,6 +16,14 @@ type SeedUser struct {
 	Username    string
 	Password    string
 	DisplayName string
+	Role        string
+}
+
+func getEnvOrDefault(key, defaultValue string) string {
+	if val := os.Getenv(key); val != "" {
+		return val
+	}
+	return defaultValue
 }
 
 func main() {
@@ -30,18 +39,32 @@ func main() {
 		log.Fatalf("failed to ping database: %v", err)
 	}
 
+	adminEmail := getEnvOrDefault("ADMIN_EMAIL", "admin@snuzeflow.com")
+	adminUsername := getEnvOrDefault("ADMIN_USERNAME", "admin")
+	adminPassword := getEnvOrDefault("ADMIN_PASSWORD", "AdminPass123!")
+	adminDisplayName := getEnvOrDefault("ADMIN_DISPLAY_NAME", "System Admin")
+
 	testUsers := []SeedUser{
+		{
+			Email:       adminEmail,
+			Username:    adminUsername,
+			Password:    adminPassword,
+			DisplayName: adminDisplayName,
+			Role:        "admin",
+		},
 		{
 			Email:       "demo@snuzeflow.com",
 			Username:    "demouser",
 			Password:    "password123",
 			DisplayName: "Demo User",
+			Role:        "user",
 		},
 		{
 			Email:       "alex@snuzeflow.com",
 			Username:    "alex",
 			Password:    "password123",
 			DisplayName: "Alex Rivera",
+			Role:        "user",
 		},
 	}
 
@@ -49,13 +72,13 @@ func main() {
 
 	for _, u := range testUsers {
 		var exists bool
-		err := db.QueryRowContext(ctx, "SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)", u.Email).Scan(&exists)
+		err := db.QueryRowContext(ctx, "SELECT EXISTS(SELECT 1 FROM users WHERE email = $1 OR username = $2)", u.Email, u.Username).Scan(&exists)
 		if err != nil {
 			log.Fatalf("failed to check existence for %s: %v", u.Email, err)
 		}
 
 		if exists {
-			log.Printf("seed user %s already exists, skipping...", u.Email)
+			log.Printf("seed user %s (@%s) already exists, skipping...", u.Email, u.Username)
 			continue
 		}
 
@@ -65,15 +88,15 @@ func main() {
 		}
 
 		query := `
-			INSERT INTO users (email, username, password_hash, display_name)
-			VALUES ($1, $2, $3, $4)
+			INSERT INTO users (email, username, password_hash, display_name, role)
+			VALUES ($1, $2, $3, $4, $5)
 		`
-		_, err = db.ExecContext(ctx, query, u.Email, u.Username, string(hashedPassword), u.DisplayName)
+		_, err = db.ExecContext(ctx, query, u.Email, u.Username, string(hashedPassword), u.DisplayName, u.Role)
 		if err != nil {
 			log.Fatalf("failed to insert seed user %s: %v", u.Email, err)
 		}
 
-		log.Printf("successfully seeded user: %s (@%s)", u.Email, u.Username)
+		log.Printf("successfully seeded user: %s (@%s) [role: %s]", u.Email, u.Username, u.Role)
 	}
 
 	log.Println("database seeding completed successfully")

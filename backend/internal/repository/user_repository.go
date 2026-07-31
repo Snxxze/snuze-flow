@@ -17,6 +17,7 @@ type UserDB struct {
 	Username     string    `db:"username"`
 	PasswordHash string    `db:"password_hash"`
 	DisplayName  string    `db:"display_name"`
+	Role         string    `db:"role"`
 	CreatedAt    time.Time `db:"created_at"`
 }
 
@@ -27,6 +28,7 @@ func (u *UserDB) ToDomain() *domain.User {
 		Username:     u.Username,
 		PasswordHash: u.PasswordHash,
 		DisplayName:  u.DisplayName,
+		Role:         u.Role,
 		CreatedAt:    u.CreatedAt,
 	}
 }
@@ -40,12 +42,15 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 }
 
 func (r *UserRepository) Create(ctx context.Context, user *domain.User) error {
+	if user.Role == "" {
+		user.Role = "user"
+	}
 	query := `
-		INSERT INTO users (email, username, password_hash, display_name)
-		VALUES ($1, $2, $3, $4)
+		INSERT INTO users (email, username, password_hash, display_name, role)
+		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id, created_at
 	`
-	err := r.db.QueryRowContext(ctx, query, user.Email, user.Username, user.PasswordHash, user.DisplayName).
+	err := r.db.QueryRowContext(ctx, query, user.Email, user.Username, user.PasswordHash, user.DisplayName, user.Role).
 		Scan(&user.ID, &user.CreatedAt)
 	if err != nil {
 		return fmt.Errorf("failed to insert user: %w", err)
@@ -55,13 +60,13 @@ func (r *UserRepository) Create(ctx context.Context, user *domain.User) error {
 
 func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*domain.User, error) {
 	query := `
-		SELECT id, email, username, password_hash, display_name, created_at
+		SELECT id, email, username, password_hash, display_name, role, created_at
 		FROM users
 		WHERE email = $1
 	`
 	var u UserDB
 	err := r.db.QueryRowContext(ctx, query, email).
-		Scan(&u.ID, &u.Email, &u.Username, &u.PasswordHash, &u.DisplayName, &u.CreatedAt)
+		Scan(&u.ID, &u.Email, &u.Username, &u.PasswordHash, &u.DisplayName, &u.Role, &u.CreatedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, apperrors.ErrNotFound
@@ -73,13 +78,13 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*domain.
 
 func (r *UserRepository) GetByID(ctx context.Context, id string) (*domain.User, error) {
 	query := `
-		SELECT id, email, username, password_hash, display_name, created_at
+		SELECT id, email, username, password_hash, display_name, role, created_at
 		FROM users
 		WHERE id = $1
 	`
 	var u UserDB
 	err := r.db.QueryRowContext(ctx, query, id).
-		Scan(&u.ID, &u.Email, &u.Username, &u.PasswordHash, &u.DisplayName, &u.CreatedAt)
+		Scan(&u.ID, &u.Email, &u.Username, &u.PasswordHash, &u.DisplayName, &u.Role, &u.CreatedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, apperrors.ErrNotFound

@@ -82,6 +82,7 @@ func (s *UserService) Register(ctx context.Context, req *dto.RegisterRequest) (*
 			Email:       newUser.Email,
 			Username:    newUser.Username,
 			DisplayName: newUser.DisplayName,
+			Role:        newUser.Role,
 			CreatedAt:   newUser.CreatedAt.Format(time.RFC3339),
 		},
 	}, nil
@@ -122,6 +123,7 @@ func (s *UserService) Login(ctx context.Context, req *dto.LoginRequest) (*dto.Au
 			Email:       user.Email,
 			Username:    user.Username,
 			DisplayName: user.DisplayName,
+			Role:        user.Role,
 			CreatedAt:   user.CreatedAt.Format(time.RFC3339),
 		},
 	}, nil
@@ -145,6 +147,7 @@ func (s *UserService) GetMe(ctx context.Context, userID string) (*dto.UserRespon
 		Email:       user.Email,
 		Username:    user.Username,
 		DisplayName: user.DisplayName,
+		Role:        user.Role,
 		CreatedAt:   user.CreatedAt.Format(time.RFC3339),
 	}, nil
 }

@@ -3,19 +3,23 @@ package config
 import (
 	"os"
 	"strconv"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	Port            string
-	DatabaseURL     string
-	JWTSecret       string
-	JWTExpiryHours  int
-	CORSAllowOrigin        string
-	Environment            string
+	Port                    string
+	DatabaseURL             string
+	JWTSecret               string
+	JWTExpiryHours          int
+	CORSAllowOrigin         string
+	Environment             string
 	AllowPublicRegistration bool
 }
 
 func LoadConfig() *Config {
+	_ = godotenv.Load(".env.local", ".env") 
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
