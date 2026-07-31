@@ -34,7 +34,7 @@ export const RegisterPage: React.FC = () => {
         </p>
 
         <div className="mt-6 rounded-lg border border-surface-border bg-canvas p-4 text-left text-xs text-charcoal-subtle space-y-2">
-          <p className="font-semibold text-charcoal">💡 มีบัญชีที่ได้รับจัดสรรแล้ว?</p>
+          <p className="font-semibold text-charcoal">มีบัญชีที่ได้รับจัดสรรแล้ว?</p>
           <p className="text-[11px]">
             หากคุณได้รับ Username / Password จากทีมงานแล้ว สามารถกดปุ่มด้านล่างเพื่อเข้าสู่ระบบได้ทันที
           </p>

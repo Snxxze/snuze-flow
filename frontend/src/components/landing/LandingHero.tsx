@@ -88,7 +88,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ isAuthenticated }) => 
               หากคุณต้องการทดลองใช้งานสำหรับตนเองหรือทีมขนาดเล็ก สามารถติดต่อขอรับ Username และ Password สำหรับเข้าใช้งานได้จากทีมงานโดยตรง
             </p>
             <div className="rounded-lg border border-surface-border bg-canvas p-3 text-charcoal font-mono text-[11px]">
-              📌 ช่องทางติดต่อทีมพัฒนา:<br />
+              ช่องทางติดต่อทีมพัฒนา:<br />
               Email: dev@snuzeflow.local (หรือติดต่อ Admin ประจำทีมของคุณ)
             </div>
             <p className="text-[11px] text-charcoal-subtle/70">

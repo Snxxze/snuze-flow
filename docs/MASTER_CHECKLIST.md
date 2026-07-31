@@ -39,3 +39,11 @@
 
 ## 4. API Contract Pipeline
 - [ ] สั่งรัน `make gen-api` หรือ `npm run gen:api` (`swag init` $\rightarrow$ `openapi-typescript`) ทุกครั้งที่มีการแก้ DTO/Handler
+
+---
+
+## 5. Git Branching & Release Pipeline
+- [ ] **Branch Structure**: `main` (Production only), `develop` (Integration/Staging), `feature/*` (Feature development)
+- [ ] **Commit Standard**: ใช้ Conventional Commits (`feat:`, `fix:`, `refactor:`, `docs:`, `chore:`)
+- [ ] **PR Verification**: ห้าม Push ตรงเข้า `main` ทุกอย่างต้องผ่าน Pull Request และรัน Type Check (`npx tsc --noEmit`) ผ่านก่อน Merge
+
