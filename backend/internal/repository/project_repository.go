@@ -180,10 +180,10 @@ func (r *ProjectRepository) CreateInvitation(ctx context.Context, invitation *do
 
 func (r *ProjectRepository) ListPendingInvitationsByUserID(ctx context.Context, userID string) ([]domain.ProjectInvitation, error) {
 	query := `
-		SELECT pi.id, pi.project_id, pi.invited_user_id, pi.invited_by_id, pi.status, pi.created_at, p.name as project_name, u.display_name as invited_by
+		SELECT pi.id, pi.project_id, pi.invited_user_id, COALESCE(pi.invited_by_id, '00000000-0000-0000-0000-000000000000'::uuid), pi.status, pi.created_at, p.name as project_name, COALESCE(u.display_name, 'System') as invited_by
 		FROM project_invitations pi
 		INNER JOIN projects p ON pi.project_id = p.id
-		INNER JOIN users u ON pi.invited_by_id = u.id
+		LEFT JOIN users u ON pi.invited_by_id = u.id
 		WHERE pi.invited_user_id = $1 AND pi.status = 'pending'
 		ORDER BY pi.created_at DESC
 	`

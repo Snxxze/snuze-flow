@@ -171,77 +171,79 @@ export const Sidebar: React.FC<SidebarProps> = ({
           })}
         </div>
 
-        {/* Section 4: Recent Projects Rail (Timeline) */}
-        {recentProjects.length > 0 && (
-          <div className={`flex-1 overflow-y-auto pt-2 transition-all duration-300 ${isOpen ? 'px-3 border-t border-surface-border/60' : 'px-0'}`}>
-            <p
-              className={`text-[10px] font-semibold uppercase tracking-widest text-charcoal-subtle/70 px-1 mb-3 whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out ${
-                isOpen ? 'opacity-100 max-h-6' : 'opacity-0 max-h-0 mb-0'
-              }`}
-            >
-              {t('layout.recent_projects')}
-            </p>
+        {/* Section 4: Recent Projects Rail (Timeline & Flexible Spacer) */}
+        <div className={`flex-1 min-h-0 overflow-y-auto pt-2 transition-all duration-300 ${isOpen ? 'px-3' : 'px-0'}`}>
+          {recentProjects.length > 0 && (
+            <div className="border-t border-surface-border/60 pt-2">
+              <p
+                className={`text-[10px] font-semibold uppercase tracking-widest text-charcoal-subtle/70 px-1 mb-3 whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out ${
+                  isOpen ? 'opacity-100 max-h-6' : 'opacity-0 max-h-0 mb-0'
+                }`}
+              >
+                {t('layout.recent_projects')}
+              </p>
 
-            {isOpen ? (
-              /* Expanded Rail Timeline */
-              <div className="relative pl-5 transition-all duration-300 ease-in-out">
-                <svg
-                  className="absolute left-[7px] top-0"
-                  width="2"
-                  style={{ height: 'calc(100% - 8px)' }}
-                  fill="none"
-                >
-                  <line
-                    x1="1" y1="0" x2="1" y2="100%"
-                    stroke="#e5e3d7"
-                    strokeWidth="2"
-                    strokeDasharray="2 4"
-                    strokeLinecap="round"
-                  />
-                </svg>
+              {isOpen ? (
+                /* Expanded Rail Timeline */
+                <div className="relative pl-5 transition-all duration-300 ease-in-out">
+                  <svg
+                    className="absolute left-[7px] top-0"
+                    width="2"
+                    style={{ height: 'calc(100% - 8px)' }}
+                    fill="none"
+                  >
+                    <line
+                      x1="1" y1="0" x2="1" y2="100%"
+                      stroke="#e5e3d7"
+                      strokeWidth="2"
+                      strokeDasharray="2 4"
+                      strokeLinecap="round"
+                    />
+                  </svg>
 
-                <div className="space-y-1">
-                  {recentProjects.map((p, i) => (
+                  <div className="space-y-1">
+                    {recentProjects.map((p, i) => (
+                      <Link
+                        key={p.id}
+                        to={`/projects/${p.id}`}
+                        className="relative flex flex-col group p-1.5 rounded-md hover:bg-surface-border/40 transition-colors"
+                      >
+                        <span className={`rail-dot ${i === 0 ? 'active' : ''} absolute -left-[16px] top-2.5`} />
+                        <span className="text-xs font-medium text-charcoal group-hover:text-ocean transition-colors truncate">
+                          {p.name}
+                        </span>
+                        <span className="text-[10px] font-data text-charcoal-subtle/70 mt-0.5">
+                          {p.updatedLabel}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                /* Collapsed Icons for Recent Projects */
+                <div className="flex flex-col items-center space-y-3 transition-all duration-300 ease-in-out">
+                  {recentProjects.slice(0, 3).map((p, i) => (
                     <Link
                       key={p.id}
                       to={`/projects/${p.id}`}
-                      className="relative flex flex-col group p-1.5 rounded-md hover:bg-surface-border/40 transition-colors"
+                      className={`h-7 w-7 shrink-0 flex items-center justify-center rounded-full text-xs font-bold transition-colors ${
+                        i === 0
+                          ? 'bg-surface-border/80 text-ocean'
+                          : 'text-charcoal-subtle hover:text-charcoal hover:bg-surface-border/40'
+                      }`}
+                      title={p.name}
                     >
-                      <span className={`rail-dot ${i === 0 ? 'active' : ''} absolute -left-[16px] top-2.5`} />
-                      <span className="text-xs font-medium text-charcoal group-hover:text-ocean transition-colors truncate">
-                        {p.name}
-                      </span>
-                      <span className="text-[10px] font-data text-charcoal-subtle/70 mt-0.5">
-                        {p.updatedLabel}
-                      </span>
+                      {p.name.charAt(0).toUpperCase()}
                     </Link>
                   ))}
                 </div>
-              </div>
-            ) : (
-              /* Collapsed Icons for Recent Projects */
-              <div className="flex flex-col items-center space-y-3 transition-all duration-300 ease-in-out">
-                {recentProjects.slice(0, 3).map((p, i) => (
-                  <Link
-                    key={p.id}
-                    to={`/projects/${p.id}`}
-                    className={`h-7 w-7 shrink-0 flex items-center justify-center rounded-full text-xs font-bold transition-colors ${
-                      i === 0
-                        ? 'bg-surface-border/80 text-ocean'
-                        : 'text-charcoal-subtle hover:text-charcoal hover:bg-surface-border/40'
-                    }`}
-                    title={p.name}
-                  >
-                    {p.name.charAt(0).toUpperCase()}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          )}
+        </div>
 
-        {/* Section 5: User Profile Dropdown Menu */}
-        <div className={`pb-3 shrink-0 transition-all duration-300 ${isOpen ? 'px-3 pt-3 border-t border-surface-border' : 'px-0 flex justify-center pt-2'}`}>
+        {/* Section 5: User Profile Dropdown Menu (Sticky Bottom) */}
+        <div className={`mt-auto pb-3 shrink-0 transition-all duration-300 ${isOpen ? 'px-3 pt-3 border-t border-surface-border' : 'px-0 flex justify-center pt-2 border-t border-surface-border/40'}`}>
           <div className="flex items-center justify-between w-full">
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>

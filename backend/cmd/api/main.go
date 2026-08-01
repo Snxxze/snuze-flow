@@ -38,7 +38,7 @@ func main() {
 	projectHandler := handler.NewProjectHandler(projectService)
 
 	taskRepo := repository.NewTaskRepository(db)
-	taskService := service.NewTaskService(taskRepo, projectRepo)
+	taskService := service.NewTaskService(taskRepo, projectRepo, userRepo)
 	taskHandler := handler.NewTaskHandler(taskService)
 
 	subtaskRepo := repository.NewSubtaskRepository(db)
@@ -47,6 +47,9 @@ func main() {
 
 	r := gin.New()
 	r.Use(gin.Recovery())
+	if cfg.Environment == "development" {
+		r.Use(gin.Logger())
+	}
 	r.Use(middleware.RequestID())
 	r.Use(middleware.RequestLogger(logger))
 

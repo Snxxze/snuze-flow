@@ -1,0 +1,2 @@
+ALTER TABLE project_invitations
+ADD COLUMN IF NOT EXISTS invited_by_id UUID REFERENCES users(id) ON DELETE CASCADE;

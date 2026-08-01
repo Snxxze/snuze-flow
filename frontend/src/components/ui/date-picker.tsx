@@ -1,35 +1,88 @@
 import * as React from 'react';
-import { Calendar as CalendarIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+import { th, enUS } from 'date-fns/locale';
+import { Calendar as CalendarIcon, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-export interface DatePickerProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
-  value?: string;
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+
+export interface DatePickerProps {
+  value?: string; // YYYY-MM-DD or ISO string
   onChange?: (date: string) => void;
   placeholder?: string;
+  className?: string;
 }
 
-export const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
-  ({ className, value = '', onChange, placeholder = 'เลือกวันกำหนดส่ง...', ...props }, ref) => {
-    return (
-      <div className="relative flex items-center w-full">
-        <div className="absolute left-3 pointer-events-none text-charcoal-subtle">
-          <CalendarIcon className="h-4 w-4 text-ocean" />
-        </div>
-        <input
-          ref={ref}
-          type="date"
-          value={value}
-          onChange={(e) => onChange && onChange(e.target.value)}
+export function DatePicker({
+  value = '',
+  onChange,
+  placeholder,
+  className,
+}: DatePickerProps) {
+  const { i18n } = useTranslation();
+
+  const currentLocale = i18n.language === 'th' ? th : enUS;
+  const defaultPlaceholder = i18n.language === 'th' ? 'เลือกวันกำหนดส่ง...' : 'Pick a date...';
+  const displayPlaceholder = placeholder ?? defaultPlaceholder;
+
+  const selectedDate = React.useMemo(() => {
+    if (!value) return undefined;
+    const d = new Date(value);
+    return isNaN(d.getTime()) ? undefined : d;
+  }, [value]);
+
+  return (
+    <Popover modal={true}>
+      <PopoverTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
           className={cn(
-            'flex h-9 w-full rounded-md border border-surface-border bg-canvas pl-9 pr-3 py-1.5 text-xs text-charcoal shadow-xs transition-colors hover:bg-surface focus:border-ocean focus:outline-none focus:ring-1 focus:ring-ocean disabled:cursor-not-allowed disabled:opacity-50 [color-scheme:light]',
+            'w-full justify-start text-left font-normal text-xs h-9 px-3 border-surface-border bg-canvas hover:bg-surface text-charcoal shadow-xs',
+            !selectedDate && 'text-charcoal-subtle/70',
             className
           )}
-          placeholder={placeholder}
-          {...props}
+        >
+          <CalendarIcon className="mr-2 h-4 w-4 text-ocean shrink-0" />
+          <span className="truncate flex-1">
+            {selectedDate
+              ? format(selectedDate, 'd MMM yyyy', { locale: currentLocale })
+              : displayPlaceholder}
+          </span>
+          {selectedDate && (
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onChange) onChange('');
+              }}
+              className="ml-1 text-charcoal-subtle/60 hover:text-charcoal p-0.5 rounded-full transition-colors"
+            >
+              <X className="h-3.5 w-3.5" />
+            </span>
+          )}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0 z-[100]" align="start">
+        <Calendar
+          mode="single"
+          selected={selectedDate}
+          onSelect={(date) => {
+            if (onChange) {
+              onChange(date ? format(date, 'yyyy-MM-dd') : '');
+            }
+          }}
+          initialFocus
         />
-      </div>
-    );
-  }
-);
-DatePicker.displayName = 'DatePicker';
+      </PopoverContent>
+    </Popover>
+  );
+}

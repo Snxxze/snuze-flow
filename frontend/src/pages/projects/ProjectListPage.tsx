@@ -32,15 +32,19 @@ export const ProjectListPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchData = async () => {
+    setIsLoading(true);
     try {
-      const [projData, invData] = await Promise.all([
-        projectService.listProjects(),
-        projectService.listPendingInvitations(),
-      ]);
+      const projData = await projectService.listProjects();
       setProjects(projData);
+    } catch (err) {
+      console.error('Failed to load projects:', err);
+    }
+
+    try {
+      const invData = await projectService.listPendingInvitations();
       setInvitations(invData);
     } catch (err) {
-      console.error('Failed to load project data:', err);
+      console.error('Failed to load pending invitations:', err);
     } finally {
       setIsLoading(false);
     }
@@ -199,7 +203,7 @@ export const ProjectListPage: React.FC = () => {
                     </p>
                     {/* Wave Progress Bar */}
                     <div className="wave-track">
-                      <div className="wave-fill" style={{ width: '50%' }} />
+                      <div className="wave-fill" style={{ width: `${p.completionRate ?? 0}%` }} />
                     </div>
                   </div>
                 </Link>
@@ -285,7 +289,7 @@ export const ProjectListPage: React.FC = () => {
 
                   {/* Wave Progress Bar */}
                   <div className="wave-track mb-3">
-                    <div className="wave-fill" style={{ width: '50%' }} />
+                    <div className="wave-fill" style={{ width: `${p.completionRate ?? 0}%` }} />
                   </div>
 
                   {/* Card Footer: Date + Enter Link */}

@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const taskAssigneeSchema = z.object({
   id: z.string().uuid(),
-  email: z.string().email(),
+  email: z.string(),
   username: z.string(),
   displayName: z.string(),
 });
