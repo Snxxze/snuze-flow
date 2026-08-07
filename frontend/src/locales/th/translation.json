@@ -59,7 +59,7 @@
     "inviting": "กำลังส่งคำเชิญ...",
     "invite_success": "ส่งคำเชิญสำเร็จไปยัง {{email}}",
     "invite_failed": "ส่งคำเชิญไม่สำเร็จ",
-    "members_section_title": "สมาชิกในพื้นที่ทำงาน ({{count}})",
+    "members_section_title": "สมาชิก ({{count}})",
     "back_to_list": "← กลับสู่หน้าโปรเจกต์ทั้งหมด",
     "not_found": "ไม่พบโปรเจกต์",
     "not_found_desc": "โปรเจกต์อาจถูกลบไปแล้ว หรือคุณไม่มีสิทธิ์เข้าถึง",
@@ -127,6 +127,7 @@
     "sort_priority_desc": "เรียงตามความสำคัญ (มาก - น้อย)",
     "sort_created_at_desc": "เรียงตามวันที่สร้างล่าสุด",
     "view_board": "บอร์ด",
+    "view_list": "รายการ",
     "view_table": "ตาราง",
     "empty_filtered": "ไม่พบรายการงานตามเงื่อนไขที่เลือก"
   },

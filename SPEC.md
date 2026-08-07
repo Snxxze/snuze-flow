@@ -115,9 +115,12 @@ Personal project management web app. ใช้ส่วนตัวและ col
 | GET | `/api/projects/:id` | 🔒 member only |
 | PATCH | `/api/projects/:id` | 🔒 owner only |
 | DELETE | `/api/projects/:id` | 🔒 owner only |
+| GET | `/api/projects/:id/stats` | 🔒 member — ดึงสถิติตัวเลขสรุปผลโปรเจกต์ |
 | GET | `/api/invitations` | 🔒 ดึงรายการคำเชิญที่เข้าหาตัวเอง (pending) |
 | POST | `/api/projects/:id/invitations` | 🔒 owner — ส่งคำเชิญโดยค้นหาผ่าน email หรือ username |
 | PUT | `/api/invitations/:id/respond` | 🔒 ผู้ถูกเชิญกด accept / reject |
+| POST | `/api/invitations/:id/accept` | 🔒 ผู้ถูกเชิญกดตอบรับคำเชิญ |
+| POST | `/api/invitations/:id/reject` | 🔒 ผู้ถูกเชิญกดปฏิเสธคำเชิญ |
 | DELETE | `/api/projects/:id/members/:userId` | 🔒 owner |
 
 ### Tasks
@@ -134,7 +137,7 @@ Personal project management web app. ใช้ส่วนตัวและ col
 |---|---|---|
 | GET | `/api/tasks/:id/subtasks` | 🔒 member |
 | POST | `/api/tasks/:id/subtasks` | 🔒 member |
-| PUT | `/api/subtasks/:id` | 🔒 member |
+| PATCH | `/api/subtasks/:id/status` | 🔒 member — สลับสถานะติ๊กถูก subtask |
 | DELETE | `/api/subtasks/:id` | 🔒 member |
 
 ### Dashboard
