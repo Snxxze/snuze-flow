@@ -10,7 +10,7 @@ import { projectService } from '@/features/projects/services/projectService';
 import { Project, ProjectStats } from '@/features/projects/types/project';
 import { taskService } from '@/features/tasks/services/taskService';
 import { CreateTaskPayload, Task } from '@/features/tasks/types/task';
-import { ArrowLeft, UserPlus, ShieldCheck, User, Plus, Kanban, Users } from 'lucide-react';
+import { ArrowLeft, UserPlus, ShieldCheck, User, Plus, LayoutGrid, List, Table, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -30,7 +30,7 @@ export const ProjectDetailPage: React.FC = () => {
   const [stats, setStats] = useState<ProjectStats | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [activeTab, setActiveTab] = useState<'kanban' | 'members'>('kanban');
+  const [activeTab, setActiveTab] = useState<'board' | 'list' | 'table' | 'members'>('board');
   const [isLoading, setIsLoading] = useState(true);
 
   const recentProjects = [...projects]
@@ -186,24 +186,49 @@ export const ProjectDetailPage: React.FC = () => {
         {/* Section 2: Project Summary Analytics Widget */}
         {stats && <ProjectSummaryWidget stats={stats} />}
 
-        {/* Section 3: Navigation Tabs (Kanban Board / Team Members) */}
-        <div className="mb-6 flex space-x-2 border-b border-surface-border">
+        {/* Section 3: Navigation Tabs (Board / List / Table / Members) */}
+        <div className="mb-6 flex flex-wrap items-center space-x-1 sm:space-x-2 border-b border-surface-border">
           <button
-            onClick={() => setActiveTab('kanban')}
+            onClick={() => setActiveTab('board')}
             className={`flex items-center space-x-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors ${
-              activeTab === 'kanban'
-                ? 'border-ocean text-ocean'
+              activeTab === 'board'
+                ? 'border-ocean text-ocean font-bold'
                 : 'border-transparent text-charcoal-subtle hover:text-charcoal'
             }`}
           >
-            <Kanban className="h-4 w-4" />
+            <LayoutGrid className="h-4 w-4" />
             <span>{t('kanban.view_board')} ({tasks.length})</span>
           </button>
+
+          <button
+            onClick={() => setActiveTab('list')}
+            className={`flex items-center space-x-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors ${
+              activeTab === 'list'
+                ? 'border-ocean text-ocean font-bold'
+                : 'border-transparent text-charcoal-subtle hover:text-charcoal'
+            }`}
+          >
+            <List className="h-4 w-4" />
+            <span>{t('kanban.view_list')} ({tasks.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('table')}
+            className={`flex items-center space-x-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors ${
+              activeTab === 'table'
+                ? 'border-ocean text-ocean font-bold'
+                : 'border-transparent text-charcoal-subtle hover:text-charcoal'
+            }`}
+          >
+            <Table className="h-4 w-4" />
+            <span>{t('kanban.view_table')} ({tasks.length})</span>
+          </button>
+
           <button
             onClick={() => setActiveTab('members')}
             className={`flex items-center space-x-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition-colors ${
               activeTab === 'members'
-                ? 'border-ocean text-ocean'
+                ? 'border-ocean text-ocean font-bold'
                 : 'border-transparent text-charcoal-subtle hover:text-charcoal'
             }`}
           >
@@ -213,15 +238,7 @@ export const ProjectDetailPage: React.FC = () => {
         </div>
 
         {/* Section 4: Active Tab Content */}
-        {activeTab === 'kanban' ? (
-          <KanbanBoard
-            tasks={tasks}
-            members={project.members || []}
-            onStatusChange={handleStatusChange}
-            onDeleteTask={handleDeleteTask}
-            onSelectTask={(task) => setSelectedTask(task)}
-          />
-        ) : (
+        {activeTab === 'members' ? (
           <div className="rounded-md border border-surface-border bg-surface p-6 shadow-sm">
             <h2 className="text-base font-bold text-charcoal">
               {t('project.members_section_title', { count: project.members?.length || 0 })}
@@ -258,6 +275,16 @@ export const ProjectDetailPage: React.FC = () => {
               ))}
             </div>
           </div>
+        ) : (
+          <KanbanBoard
+            tasks={tasks}
+            members={project.members || []}
+            viewMode={activeTab}
+            onStatusChange={handleStatusChange}
+            onDeleteTask={handleDeleteTask}
+            onSelectTask={(task) => setSelectedTask(task)}
+            onSubtasksUpdated={() => fetchProjectData()}
+          />
         )}
 
         {/* Section 5: Modals (Task Detail / Create Task / Invite Member) */}

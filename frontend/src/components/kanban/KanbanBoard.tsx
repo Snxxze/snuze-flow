@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ProjectMember } from '@/features/projects/types/project';
 import { Task } from '@/features/tasks/types/task';
 import { useTaskFilters, PriorityFilter, SortOption } from '@/features/tasks/hooks/useTaskFilters';
-import { useTaskViewMode } from '@/features/tasks/hooks/useTaskViewMode';
+import { useTaskViewMode, ViewMode } from '@/features/tasks/hooks/useTaskViewMode';
+import { useInlineSubtasks } from '@/features/subtasks/hooks/useInlineSubtasks';
 import { TaskTableView } from '@/components/tasks/TaskTableView';
+import { TaskListView } from '@/components/tasks/TaskListView';
 import {
   Select,
   SelectContent,
@@ -21,28 +23,36 @@ import {
   User,
   AlertTriangle,
   CheckSquare,
+  Square,
   Search,
-  LayoutGrid,
-  List,
   ArrowUpDown,
+  CornerDownRight,
+  Plus,
+  Loader2,
 } from 'lucide-react';
 
 interface KanbanBoardProps {
   tasks: Task[];
   members?: ProjectMember[];
+  viewMode?: ViewMode;
   onStatusChange: (taskId: string, newStatus: 'todo' | 'in_progress' | 'done') => Promise<void>;
   onDeleteTask: (taskId: string) => Promise<void>;
   onSelectTask?: (task: Task) => void;
+  onSubtasksUpdated?: () => void;
 }
 
 export const KanbanBoard: React.FC<KanbanBoardProps> = ({
   tasks,
   members = [],
+  viewMode: controlledViewMode,
   onStatusChange,
   onDeleteTask,
   onSelectTask,
+  onSubtasksUpdated,
 }) => {
   const { t, i18n } = useTranslation();
+  const [newSubtaskTitles, setNewSubtaskTitles] = useState<Record<string, string>>({});
+
   const {
     searchQuery,
     setSearchQuery,
@@ -56,11 +66,31 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
   } = useTaskFilters(tasks);
 
   const {
-    viewMode,
-    setViewMode,
+    viewMode: hookViewMode,
     toggleColumnCollapse,
     isColumnCollapsed,
   } = useTaskViewMode();
+
+  const {
+    expandedTasks,
+    subtasksMap,
+    loadingTasks,
+    toggleTaskExpanded,
+    toggleSubtaskStatus,
+    createSubtask,
+    deleteSubtask,
+  } = useInlineSubtasks();
+
+  const activeViewMode = controlledViewMode || hookViewMode;
+
+  const handleAddSubtaskSubmit = async (taskId: string, e: React.FormEvent) => {
+    e.preventDefault();
+    const title = newSubtaskTitles[taskId] || '';
+    if (!title.trim()) return;
+
+    await createSubtask(taskId, title, onSubtasksUpdated);
+    setNewSubtaskTitles((prev) => ({ ...prev, [taskId]: '' }));
+  };
 
   const columns: { id: 'todo' | 'in_progress' | 'done'; title: string; color: string }[] = [
     { id: 'todo', title: t('project.stat_todo'), color: 'bg-charcoal/40' },
@@ -71,11 +101,23 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case 'high':
-        return <span className="rounded-full bg-status-danger/10 px-2 py-0.5 text-[10px] font-semibold text-status-danger">{t('task.priority_high')}</span>;
+        return (
+          <span className="rounded-full bg-status-danger/10 px-2 py-0.5 text-[10px] font-semibold text-status-danger">
+            {t('task.priority_high')}
+          </span>
+        );
       case 'medium':
-        return <span className="rounded-full bg-status-warning/10 px-2 py-0.5 text-[10px] font-semibold text-status-warning">{t('task.priority_medium')}</span>;
+        return (
+          <span className="rounded-full bg-status-warning/10 px-2 py-0.5 text-[10px] font-semibold text-status-warning">
+            {t('task.priority_medium')}
+          </span>
+        );
       default:
-        return <span className="rounded-full bg-charcoal/10 px-2 py-0.5 text-[10px] font-medium text-charcoal-subtle">{t('task.priority_low')}</span>;
+        return (
+          <span className="rounded-full bg-charcoal/10 px-2 py-0.5 text-[10px] font-medium text-charcoal-subtle">
+            {t('task.priority_low')}
+          </span>
+        );
     }
   };
 
@@ -104,13 +146,22 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
       return (
         <span className="inline-flex items-center space-x-1 text-[10px] text-charcoal-subtle">
           <Calendar className="h-3 w-3 text-charcoal-subtle" />
-          <span>{due.toLocaleDateString(i18n.language === 'th' ? 'th-TH' : 'en-US', { month: 'short', day: 'numeric' })}</span>
+          <span>
+            {due.toLocaleDateString(i18n.language === 'th' ? 'th-TH' : 'en-US', {
+              month: 'short',
+              day: 'numeric',
+            })}
+          </span>
         </span>
       );
     }
   };
 
   const renderTaskCard = (tObj: Task, colId: string) => {
+    const isTaskExpanded = !!expandedTasks[tObj.id];
+    const subtaskItems = subtasksMap[tObj.id] || [];
+    const isSubtaskLoading = !!loadingTasks[tObj.id];
+
     return (
       <div
         key={tObj.id}
@@ -127,7 +178,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
               onDeleteTask(tObj.id);
             }}
             className="opacity-0 group-hover:opacity-100 p-1 text-charcoal-subtle hover:text-status-danger transition-opacity"
-            title="ลบงาน"
+            title={t('common.delete')}
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
@@ -146,14 +197,26 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
           </div>
 
           <div className="flex items-center space-x-2">
-            {tObj.subtaskStats && tObj.subtaskStats.totalCount > 0 && (
-              <span className="inline-flex items-center space-x-1 text-[10px] font-semibold text-charcoal-subtle">
-                <CheckSquare className="h-3 w-3 text-ocean" />
-                <span>
-                  {tObj.subtaskStats.completedCount}/{tObj.subtaskStats.totalCount}
-                </span>
+            {/* Subtask Button Badge */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleTaskExpanded(tObj.id);
+              }}
+              className={`inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-semibold border transition-colors ${
+                isTaskExpanded
+                  ? 'bg-ocean/10 text-ocean border-ocean/30'
+                  : 'bg-canvas text-charcoal-subtle border-surface-border hover:bg-surface'
+              }`}
+              title={isTaskExpanded ? 'ย่อรายการย่อย' : 'ขยายรายการย่อย'}
+            >
+              <CheckSquare className="h-3 w-3 text-ocean" />
+              <span>
+                {tObj.subtaskStats
+                  ? `${tObj.subtaskStats.completedCount}/${tObj.subtaskStats.totalCount}`
+                  : '0/0'}
               </span>
-            )}
+            </button>
 
             {tObj.assignee ? (
               <span
@@ -163,14 +226,101 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                 {tObj.assignee.displayName.charAt(0).toUpperCase()}
               </span>
             ) : (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-canvas text-charcoal-subtle border border-surface-border" title="ยังไม่ระบุ">
+              <span
+                className="flex h-5 w-5 items-center justify-center rounded-full bg-canvas text-charcoal-subtle border border-surface-border"
+                title={t('task.unassigned')}
+              >
                 <User className="h-3 w-3" />
               </span>
             )}
           </div>
         </div>
 
-        <div className="flex items-center space-x-1 mt-2.5 border-t border-surface-border/30 pt-2" onClick={(e) => e.stopPropagation()}>
+        {/* Expanded Inline Subtasks Checklist inside Card */}
+        {isTaskExpanded && (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="mt-2.5 rounded-md bg-canvas/60 p-2 border border-surface-border/60 text-xs space-y-1.5"
+          >
+            {isSubtaskLoading ? (
+              <div className="flex items-center space-x-2 text-[11px] text-charcoal-subtle py-1">
+                <Loader2 className="h-3 w-3 animate-spin text-ocean" />
+                <span>{t('task.detail_subtask_loading')}</span>
+              </div>
+            ) : (
+              <>
+                {subtaskItems.map((sub) => (
+                  <div
+                    key={sub.id}
+                    className="flex items-center justify-between py-0.5 px-1.5 rounded hover:bg-surface text-[11px] group/sub"
+                  >
+                    <button
+                      onClick={() =>
+                        toggleSubtaskStatus(tObj.id, sub.id, sub.isCompleted, onSubtasksUpdated)
+                      }
+                      className="flex items-center space-x-1.5 text-left flex-1 min-w-0"
+                    >
+                      {sub.isCompleted ? (
+                        <CheckSquare className="h-3 w-3 text-status-done shrink-0" />
+                      ) : (
+                        <Square className="h-3 w-3 text-charcoal-subtle shrink-0 hover:text-ocean" />
+                      )}
+                      <span
+                        className={`truncate ${
+                          sub.isCompleted
+                            ? 'line-through text-charcoal-subtle'
+                            : 'text-charcoal font-medium'
+                        }`}
+                      >
+                        {sub.title}
+                      </span>
+                    </button>
+
+                    <button
+                      onClick={() => deleteSubtask(tObj.id, sub.id, onSubtasksUpdated)}
+                      className="opacity-0 group-hover/sub:opacity-100 p-0.5 text-charcoal-subtle hover:text-status-danger transition-opacity"
+                      title={t('common.delete')}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+
+                <form
+                  onSubmit={(e) => handleAddSubtaskSubmit(tObj.id, e)}
+                  className="flex items-center space-x-1.5 pt-1"
+                >
+                  <CornerDownRight className="h-3 w-3 text-ocean shrink-0" />
+                  <Input
+                    type="text"
+                    placeholder={t('task.detail_subtask_placeholder')}
+                    value={newSubtaskTitles[tObj.id] || ''}
+                    onChange={(e) =>
+                      setNewSubtaskTitles((prev) => ({
+                        ...prev,
+                        [tObj.id]: e.target.value,
+                      }))
+                    }
+                    className="h-6 text-[10px] bg-surface border-surface-border flex-1 px-1.5"
+                  />
+                  <button
+                    type="submit"
+                    disabled={!newSubtaskTitles[tObj.id]?.trim()}
+                    className="p-1 rounded bg-ocean/10 text-ocean hover:bg-ocean hover:text-white transition-colors disabled:opacity-30"
+                    title={t('task.detail_subtask_add_btn')}
+                  >
+                    <Plus className="h-3 w-3" />
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        )}
+
+        <div
+          className="flex items-center space-x-1 mt-2.5 border-t border-surface-border/30 pt-2"
+          onClick={(e) => e.stopPropagation()}
+        >
           {colId !== 'todo' && (
             <button
               onClick={() => onStatusChange(tObj.id, colId === 'done' ? 'in_progress' : 'todo')}
@@ -196,7 +346,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
 
   return (
     <div className="space-y-5">
-      {/* Search, Filter, Sorting & View Mode Toolbar */}
+      {/* Search, Filter & Sorting Toolbar */}
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between rounded-md border border-surface-border bg-surface p-3.5 shadow-xs">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-charcoal-subtle z-10" />
@@ -211,7 +361,10 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
 
         <div className="flex flex-wrap items-center gap-2">
           {/* Priority Filter */}
-          <Select value={priorityFilter} onValueChange={(val) => setPriorityFilter(val as PriorityFilter)}>
+          <Select
+            value={priorityFilter}
+            onValueChange={(val) => setPriorityFilter(val as PriorityFilter)}
+          >
             <SelectTrigger className="w-[150px]">
               <SelectValue />
             </SelectTrigger>
@@ -253,40 +406,25 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
               <SelectItem value="created_at_desc">{t('kanban.sort_created_at_desc')}</SelectItem>
             </SelectContent>
           </Select>
-
-          {/* View Mode Switcher */}
-          <div className="flex items-center rounded-md border border-surface-border bg-canvas p-0.5">
-            <button
-              onClick={() => setViewMode('board')}
-              className={`flex items-center space-x-1 rounded-sm px-2.5 py-1 text-xs font-medium transition-colors ${
-                viewMode === 'board' ? 'bg-surface text-ocean shadow-xs' : 'text-charcoal-subtle hover:text-charcoal'
-              }`}
-              title={t('kanban.view_board')}
-            >
-              <LayoutGrid className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">{t('kanban.view_board')}</span>
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className={`flex items-center space-x-1 rounded-sm px-2.5 py-1 text-xs font-medium transition-colors ${
-                viewMode === 'list' ? 'bg-surface text-ocean shadow-xs' : 'text-charcoal-subtle hover:text-charcoal'
-              }`}
-              title={t('kanban.view_table')}
-            >
-              <List className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">{t('kanban.view_table')}</span>
-            </button>
-          </div>
         </div>
       </div>
 
-      {/* Main Board View vs List View */}
-      {viewMode === 'list' ? (
+      {/* Main View Area: Board vs List vs Table */}
+      {activeViewMode === 'list' ? (
+        <TaskListView
+          tasks={filteredTasks}
+          onStatusChange={onStatusChange}
+          onDeleteTask={onDeleteTask}
+          onSelectTask={onSelectTask}
+          onSubtasksUpdated={onSubtasksUpdated}
+        />
+      ) : activeViewMode === 'table' ? (
         <TaskTableView
           tasks={filteredTasks}
           onStatusChange={onStatusChange}
           onDeleteTask={onDeleteTask}
           onSelectTask={onSelectTask}
+          onSubtasksUpdated={onSubtasksUpdated}
         />
       ) : (
         <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
@@ -305,7 +443,11 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2 overflow-hidden">
                     <span className={`h-2.5 w-2.5 rounded-full ${col.color}`} />
-                    <h3 className={`font-semibold text-charcoal text-sm truncate ${collapsed ? 'md:hidden' : ''}`}>
+                    <h3
+                      className={`font-semibold text-charcoal text-sm truncate ${
+                        collapsed ? 'md:hidden' : ''
+                      }`}
+                    >
                       {col.title}
                     </h3>
                     <span className="rounded-pill bg-canvas border border-surface-border px-1.5 py-0.5 font-data text-[10px] text-charcoal-subtle">
@@ -317,7 +459,11 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                     onClick={() => toggleColumnCollapse(col.id)}
                     className="p-1 rounded-md text-charcoal-subtle hover:bg-canvas hidden md:block"
                   >
-                    {collapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
+                    {collapsed ? (
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    ) : (
+                      <ChevronLeft className="h-3.5 w-3.5" />
+                    )}
                   </button>
                 </div>
 

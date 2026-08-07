@@ -232,7 +232,7 @@
 ## 8. 📁 สรุปไฟล์ซอร์สโค้ดอ้างอิงของระบบ
 
 ทีม UX/UI และนักพัฒนาสามารถดูซอร์สโค้ดและโครงสร้างตัวแปรภาษา Go / TypeScript ได้ที่:
-* **UI Components:** [frontend/src/components/](file:///d:/Dowload%20Google/snuze-flow/frontend/src/components/)
-* **UI Pages:** [frontend/src/pages/](file:///d:/Dowload%20Google/snuze-flow/frontend/src/pages/)
-* **TypeScript Types & Zod Schemas:** [frontend/src/features/](file:///d:/Dowload%20Google/snuze-flow/frontend/src/features/)
-* **Backend API DTO Schemas:** [backend/internal/dto/](file:///d:/Dowload%20Google/snuze-flow/backend/internal/dto/)
+* **UI Components:** [frontend/src/components/](frontend/src/components/)
+* **UI Pages:** [frontend/src/pages/](frontend/src/pages/)
+* **TypeScript Types & Zod Schemas:** [frontend/src/features/](frontend/src/features/)
+* **Backend API DTO Schemas:** [backend/internal/dto/](backend/internal/dto/)
