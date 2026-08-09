@@ -14,7 +14,7 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ isAuthenticated, i
     <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-6">
       {/* Brand */}
       <div className="flex items-center gap-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-charcoal shadow-xs">
+        <div className="flex h-7 w-7 items-center justify-center rounded bg-charcoal shadow-xs">
           <WaveLogo size={18} />
         </div>
         <span className="text-sm font-bold text-charcoal tracking-tight">SnuzeFlow</span>

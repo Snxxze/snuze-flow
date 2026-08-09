@@ -9,13 +9,13 @@ interface FeatureCardProps {
 
 // FeatureCard is a private sub-component of FeatureSection — not exported
 const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, desc }) => (
-  <div className="group flex flex-col gap-3 rounded-2xl border border-surface-border bg-surface p-6 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
-    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-ocean/10 text-ocean group-hover:bg-ocean group-hover:text-white transition-all duration-200">
+  <div className="flex flex-col gap-2.5 rounded border border-surface-border bg-surface p-5 transition-colors hover:border-charcoal/30">
+    <div className="flex h-8 w-8 items-center justify-center rounded bg-ocean/10 text-ocean shrink-0">
       {icon}
     </div>
     <div>
-      <h3 className="font-semibold text-[15px] text-charcoal mb-1">{title}</h3>
-      <p className="text-[13px] text-charcoal-subtle leading-relaxed">{desc}</p>
+      <h3 className="font-semibold text-sm text-charcoal mb-1">{title}</h3>
+      <p className="text-xs text-charcoal-subtle leading-relaxed">{desc}</p>
     </div>
   </div>
 );

@@ -23,11 +23,11 @@ export const InvitationBanner: React.FC<InvitationBannerProps> = ({
       {invitations.map((inv) => (
         <div
           key={inv.id}
-          className="flex items-center justify-between rounded-md border border-status-warning/30 bg-status-warning/5 p-4 shadow-sm"
+          className="flex items-center justify-between rounded border border-status-warning/30 bg-status-warning/5 p-4 shadow-sm"
         >
           {/* Section 1: Invitation Details & Icon */}
           <div className="flex items-center space-x-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-status-warning/20 text-status-warning">
+            <div className="flex h-9 w-9 items-center justify-center rounded bg-status-warning/20 text-status-warning">
               <Mail className="h-5 w-5" />
             </div>
             <div>

@@ -64,8 +64,8 @@
 * **Low / Medium Priority:** `#64748b` (Slate Gray) / `#1489b4` (Ocean Blue)
 
 ### มาตรฐานขอบมน (Corner Radius Token)
-* **บังคับใช้ `rounded-md` (6px) ตรงกันทั้งระบบ 100%** สำหรับ ปุ่มกด (Buttons), ช่องกรอกข้อมูล (Inputs), การ์ดงาน (Cards), และกล่องป๊อปอัพ (Modals)
-* **ยกเว้น `rounded-full`** ใช้เฉพาะ รูปอวตารผู้ใช้ (Avatars) และ Badge สถานะวงกลมเท่านั้น
+* **บังคับใช้ `rounded` (4px / `0.25rem`) ตรงกันทั้งระบบ 100%** สำหรับ ปุ่มกด (Buttons), ช่องกรอกข้อมูล (Inputs), การ์ดงาน (Cards), และกล่องป๊อปอัพ (Modals) เพื่อให้ได้ความกระชับ (Tight Density) ตามมาตรฐาน Production SaaS
+* **ยกเว้น `rounded-full`** ใช้เฉพาะ รูปอวตารผู้ใช้ (Avatars) และ Dot ระบุสถานะวงกลมเท่านั้น
 
 ### ลำดับขนาดฟอนต์ (Typography Hierarchy)
 * **Page Title:** `24px` (`text-2xl font-bold`)

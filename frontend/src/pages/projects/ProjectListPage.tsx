@@ -118,7 +118,7 @@ export const ProjectListPage: React.FC = () => {
       <div className="px-6 py-7 sm:px-8 lg:px-10">
 
         {/* Section 1: Hero Banner */}
-        <div className="relative mb-10 overflow-hidden rounded-xl bg-gradient-to-r from-ocean to-ocean-hover px-8 py-9 shadow-xs">
+        <div className="relative mb-10 overflow-hidden rounded bg-gradient-to-r from-ocean to-ocean-hover px-8 py-9 shadow-xs">
           {/* Background wave decoration */}
           <svg
             className="absolute inset-0 w-full h-full opacity-20 pointer-events-none"
@@ -176,9 +176,9 @@ export const ProjectListPage: React.FC = () => {
                 <Link
                   key={p.id}
                   to={`/projects/${p.id}`}
-                  className="group flex items-start gap-4 rounded-xl border border-surface-border bg-surface p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                  className="group flex items-start gap-4 rounded border border-surface-border bg-surface p-5 hover:shadow-md transition-all duration-200"
                 >
-                  <div className="h-11 w-11 shrink-0 rounded-md bg-ocean/10 flex items-center justify-center">
+                  <div className="h-11 w-11 shrink-0 rounded bg-ocean/10 flex items-center justify-center">
                     <FolderKanban className="h-5 w-5 text-ocean" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -243,7 +243,7 @@ export const ProjectListPage: React.FC = () => {
 
           ) : filteredProjects.length === 0 ? (
             /* Empty State */
-            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-surface-border bg-surface p-16 text-center">
+            <div className="flex flex-col items-center justify-center rounded border border-dashed border-surface-border bg-surface p-12 text-center">
               <FolderKanban className="h-10 w-10 text-charcoal-subtle/40 mb-3" />
               <h3 className="font-semibold text-charcoal">{t('project.empty_title')}</h3>
               <p className="mt-1 text-sm text-charcoal-subtle max-w-xs">
@@ -264,7 +264,7 @@ export const ProjectListPage: React.FC = () => {
                 <Link
                   key={p.id}
                   to={`/projects/${p.id}`}
-                  className="group flex flex-col rounded-xl border border-surface-border bg-surface p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                  className="group flex flex-col rounded border border-surface-border bg-surface p-5 hover:shadow-md transition-all duration-200"
                 >
                   {/* Card Header: Name + Role Badge */}
                   <div className="flex items-start justify-between gap-2 mb-2.5">

@@ -156,9 +156,9 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
 
   if (tasks.length === 0) {
     return (
-      <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-surface-border bg-surface p-6 text-center text-xs text-charcoal-subtle">
+      <p className="py-6 text-center text-xs text-charcoal-subtle/50">
         {t('kanban.empty_filtered')}
-      </div>
+      </p>
     );
   }
 
@@ -169,36 +169,29 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
         const isCollapsed = collapsedGroups[group.id];
 
         return (
-          <div
-            key={group.id}
-            className="rounded-md border border-surface-border bg-surface shadow-xs overflow-hidden"
-          >
+          <div key={group.id} className="border-b border-surface-border last:border-b-0">
             {/* Section Header */}
             <div
               onClick={() => toggleGroup(group.id)}
-              className="flex items-center justify-between border-b border-surface-border/60 bg-canvas/60 px-4 py-2.5 cursor-pointer hover:bg-canvas transition-colors select-none"
+              className="flex items-center gap-2 py-2 cursor-pointer hover:text-charcoal transition-colors select-none"
             >
-              <div className="flex items-center space-x-2">
-                {isCollapsed ? (
-                  <ChevronRight className="h-4 w-4 text-charcoal-subtle" />
-                ) : (
-                  <ChevronDown className="h-4 w-4 text-charcoal-subtle" />
-                )}
-                <span className={`h-2.5 w-2.5 rounded-full ${group.color}`} />
-                <h3 className="font-bold text-charcoal text-xs">{group.title}</h3>
-                <span className="rounded-full bg-surface border border-surface-border px-2 py-0.5 font-data text-[10px] font-semibold text-charcoal-subtle">
-                  {groupTasks.length}
-                </span>
-              </div>
+              {isCollapsed ? (
+                <ChevronRight className="h-3.5 w-3.5 text-charcoal-subtle" />
+              ) : (
+                <ChevronDown className="h-3.5 w-3.5 text-charcoal-subtle" />
+              )}
+              <span className={`h-2 w-2 rounded-full ${group.color}`} />
+              <span className="text-xs font-semibold text-charcoal">{group.title}</span>
+              <span className="text-xs text-charcoal-subtle">{groupTasks.length}</span>
             </div>
 
             {/* Tasks List */}
             {!isCollapsed && (
-              <div className="divide-y divide-surface-border/50">
+              <div className="divide-y divide-surface-border/40">
                 {groupTasks.length === 0 ? (
-                  <div className="p-3.5 text-center text-[11px] text-charcoal-subtle/50 italic">
-                    {t('kanban.empty_filtered')}
-                  </div>
+                  <p className="py-3 text-[11px] text-charcoal-subtle/40 italic text-center">
+                    ยังไม่มีงาน
+                  </p>
                 ) : (
                   groupTasks.map((task) => {
                     const isDone = task.status === 'done';

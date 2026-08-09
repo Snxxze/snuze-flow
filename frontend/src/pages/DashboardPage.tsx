@@ -100,8 +100,8 @@ export const DashboardPage: React.FC = () => {
         {/* Section 2: Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {/* Card 1: Total Tasks */}
-          <div className="rounded-xl border border-surface-border bg-surface p-4 flex items-center space-x-3.5 shadow-2xs">
-            <div className="h-10 w-10 shrink-0 rounded-lg bg-charcoal/5 flex items-center justify-center">
+          <div className="rounded border border-surface-border bg-surface p-4 flex items-center space-x-3.5 shadow-2xs">
+            <div className="h-10 w-10 shrink-0 rounded bg-charcoal/5 flex items-center justify-center">
               <CheckSquare className="h-5 w-5 text-charcoal-subtle" />
             </div>
             <div>
@@ -113,8 +113,8 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           {/* Card 2: In Progress */}
-          <div className="rounded-xl border border-surface-border bg-surface p-4 flex items-center space-x-3.5 shadow-2xs">
-            <div className="h-10 w-10 shrink-0 rounded-lg bg-ocean/10 flex items-center justify-center">
+          <div className="rounded border border-surface-border bg-surface p-4 flex items-center space-x-3.5 shadow-2xs">
+            <div className="h-10 w-10 shrink-0 rounded bg-ocean/10 flex items-center justify-center">
               <Clock className="h-5 w-5 text-ocean" />
             </div>
             <div>
@@ -126,8 +126,8 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           {/* Card 3: Done */}
-          <div className="rounded-xl border border-surface-border bg-surface p-4 flex items-center space-x-3.5 shadow-2xs">
-            <div className="h-10 w-10 shrink-0 rounded-lg bg-status-done/10 flex items-center justify-center">
+          <div className="rounded border border-surface-border bg-surface p-4 flex items-center space-x-3.5 shadow-2xs">
+            <div className="h-10 w-10 shrink-0 rounded bg-status-done/10 flex items-center justify-center">
               <CheckSquare className="h-5 w-5 text-status-done" />
             </div>
             <div>
@@ -139,8 +139,8 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           {/* Card 4: High Priority */}
-          <div className="rounded-xl border border-surface-border bg-surface p-4 flex items-center space-x-3.5 shadow-2xs">
-            <div className="h-10 w-10 shrink-0 rounded-lg bg-status-danger/10 flex items-center justify-center">
+          <div className="rounded border border-surface-border bg-surface p-4 flex items-center space-x-3.5 shadow-2xs">
+            <div className="h-10 w-10 shrink-0 rounded bg-status-danger/10 flex items-center justify-center">
               <AlertCircle className="h-5 w-5 text-status-danger" />
             </div>
             <div>
@@ -153,7 +153,7 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Section 3: Tasks Panel */}
-        <div className="rounded-xl border border-surface-border bg-surface p-6 shadow-2xs">
+        <div className="rounded border border-surface-border bg-surface p-6 shadow-2xs">
           <h2 className="font-display font-semibold text-[16px] text-charcoal mb-4 flex items-center space-x-2">
             <FolderOpen className="h-5 w-5 text-ocean" />
             <span>{t('project.recent_tasks_title')}</span>
@@ -162,7 +162,7 @@ export const DashboardPage: React.FC = () => {
           {isLoading ? (
             <div className="text-center text-xs text-charcoal-subtle py-8">{t('common.loading')}</div>
           ) : tasks.length === 0 ? (
-            <div className="text-center text-xs text-charcoal-subtle py-8 border border-dashed border-surface-border rounded-lg">
+            <div className="text-center text-xs text-charcoal-subtle py-8 border border-dashed border-surface-border rounded">
               {t('kanban.empty_filtered')}
             </div>
           ) : (
@@ -171,7 +171,7 @@ export const DashboardPage: React.FC = () => {
                 <div
                   key={task.id}
                   onClick={() => setSelectedTask(task)}
-                  className="group flex flex-col sm:flex-row sm:items-center sm:justify-between py-3.5 cursor-pointer first:pt-0 last:pb-0 hover:bg-canvas/30 transition-colors rounded-lg px-2 -mx-2"
+                  className="group flex flex-col sm:flex-row sm:items-center sm:justify-between py-3.5 cursor-pointer first:pt-0 last:pb-0 hover:bg-canvas/30 transition-colors rounded px-2 -mx-2"
                 >
                   {/* Task details */}
                   <div className="min-w-0 flex-1 pr-4">
