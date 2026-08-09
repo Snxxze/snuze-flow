@@ -83,7 +83,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               <button
                 onClick={onToggle}
-                className="p-1.5 rounded-md text-charcoal-subtle hover:text-charcoal hover:bg-surface-border/40 transition-colors shrink-0"
+                className="p-1.5 rounded text-charcoal-subtle hover:text-charcoal hover:bg-surface-border/40 transition-colors shrink-0"
                 title="ย่อ Sidebar"
               >
                 <PanelLeftClose className="h-4 w-4 shrink-0" />
@@ -93,7 +93,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             /* Collapsed State: Single Logo morphs to PanelLeftOpen Toggle on Hover (ChatGPT style) */
             <button
               onClick={onToggle}
-              className="group relative flex h-9 w-9 items-center justify-center rounded-md hover:bg-surface-border/40 transition-colors shrink-0"
+              className="group relative flex h-9 w-9 items-center justify-center rounded hover:bg-surface-border/40 transition-colors shrink-0"
               title="กาง Sidebar ออก"
             >
               <span className="group-hover:hidden flex items-center justify-center">
@@ -119,7 +119,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className={`mb-3 shrink-0 transition-all duration-300 ${isOpen ? 'px-3' : 'px-0 flex justify-center'}`}>
             <button
               onClick={onCreateProject}
-              className={`flex items-center rounded-md text-sm text-charcoal transition-all duration-300 ease-in-out group hover:bg-surface ${
+              className={`flex items-center rounded text-sm text-charcoal transition-all duration-300 ease-in-out group hover:bg-surface ${
                 isOpen ? 'w-full py-2 px-2.5' : 'h-9 w-9 justify-center p-0'
               }`}
               title={t('project.create_btn')}
@@ -149,8 +149,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 to={to}
                 className={`flex items-center py-2 text-sm transition-all duration-300 ease-in-out overflow-hidden ${
                   isOpen
-                    ? 'gap-3 px-2.5 rounded-md w-full'
-                    : 'gap-0 h-9 w-9 justify-center rounded-md px-0'
+                    ? 'gap-3 px-2.5 rounded w-full'
+                    : 'gap-0 h-9 w-9 justify-center rounded px-0'
                 } ${
                   active
                     ? 'bg-surface-border/60 text-charcoal font-semibold'
@@ -206,7 +206,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <Link
                         key={p.id}
                         to={`/projects/${p.id}`}
-                        className="relative flex flex-col group p-1.5 rounded-md hover:bg-surface-border/40 transition-colors"
+                        className="relative flex flex-col group p-1.5 rounded hover:bg-surface-border/40 transition-colors"
                       >
                         <span className={`rail-dot ${i === 0 ? 'active' : ''} absolute -left-[16px] top-2.5`} />
                         <span className="text-xs font-medium text-charcoal group-hover:text-ocean transition-colors truncate">
@@ -247,7 +247,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="flex items-center justify-between w-full">
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
-                <div className={`flex items-center rounded-md hover:bg-surface-border/40 transition-colors cursor-pointer group overflow-hidden flex-1 ${
+                <div className={`flex items-center rounded hover:bg-surface-border/40 transition-colors cursor-pointer group overflow-hidden flex-1 ${
                   isOpen ? 'gap-2.5 px-2 py-1.5' : 'h-9 w-9 justify-center p-0'
                 }`}>
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ocean/20 text-xs font-bold text-ocean">
@@ -264,7 +264,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               <DropdownMenu.Portal>
                 <DropdownMenu.Content
-                  className="z-50 min-w-[200px] rounded-md border border-surface-border bg-surface p-1 shadow-md animate-in fade-in-0 zoom-in-98 duration-100 data-[side=top]:slide-in-from-bottom-2 data-[side=bottom]:slide-in-from-top-2"
+                  className="z-50 min-w-[200px] rounded border border-surface-border bg-surface p-1 shadow-md animate-in fade-in-0 zoom-in-98 duration-100 data-[side=top]:slide-in-from-bottom-2 data-[side=bottom]:slide-in-from-top-2"
                   sideOffset={8}
                   align={isOpen ? "start" : "center"}
                 >
@@ -307,7 +307,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 onClick={handleLogout}
                 title={t('layout.logout')}
-                className="p-2 ml-1 rounded-md text-charcoal-subtle hover:text-status-danger hover:bg-status-danger/10 transition-colors shrink-0"
+                className="p-2 ml-1 rounded text-charcoal-subtle hover:text-status-danger hover:bg-status-danger/10 transition-colors shrink-0"
               >
                 <LogOut className="h-4 w-4 shrink-0" />
               </button>

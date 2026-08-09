@@ -26,7 +26,7 @@ export const KanbanCard: React.FC<KanbanCardProps> = ({
 
   return (
     <div
-      className="group relative rounded-xl border border-surface-border bg-surface p-4 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+      className="group relative rounded border border-surface-border bg-surface p-3.5 shadow-2xs hover:border-charcoal/30 transition-colors cursor-pointer"
       onClick={onToggleExpand}
     >
       {/* Header: Title + Assignee Avatar */}

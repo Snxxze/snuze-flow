@@ -19,11 +19,11 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ isAuthenticated }) => 
   const [showAccessModal, setShowAccessModal] = useState(false);
 
   return (
-    <section className="mx-auto max-w-6xl px-6 pt-16 pb-12">
+    <section className="mx-auto max-w-6xl px-6 pt-12 pb-10">
       <div className="text-center mb-10">
         {/* Closed Beta Badge */}
-        <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-surface-border bg-surface px-3.5 py-1.5 text-xs font-medium text-charcoal-subtle shadow-xs">
-          <span className="h-1.5 w-1.5 rounded-full bg-status-warning animate-pulse" />
+        <div className="mb-4 inline-flex items-center gap-2 rounded border border-surface-border bg-surface px-3 py-1 text-xs font-medium text-charcoal-subtle">
+          <span className="h-1.5 w-1.5 rounded-full bg-status-warning" />
           ระบบอยู่ในช่วง Closed Beta — บัญชีผู้ใช้จะได้รับจัดสรรจากทีมงานโดยตรง
         </div>
 
@@ -87,7 +87,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ isAuthenticated }) => 
             <p>
               หากคุณต้องการทดลองใช้งานสำหรับตนเองหรือทีมขนาดเล็ก สามารถติดต่อขอรับ Username และ Password สำหรับเข้าใช้งานได้จากทีมงานโดยตรง
             </p>
-            <div className="rounded-lg border border-surface-border bg-canvas p-3 text-charcoal font-mono text-[11px]">
+            <div className="rounded border border-surface-border bg-canvas p-3 text-charcoal font-mono text-[11px]">
               ช่องทางติดต่อทีมพัฒนา:<br />
               Email: dev@snuzeflow.local (หรือติดต่อ Admin ประจำทีมของคุณ)
             </div>
