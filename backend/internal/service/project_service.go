@@ -69,13 +69,19 @@ func (s *ProjectService) ListProjects(ctx context.Context, userID string) ([]dto
 	res := make([]dto.ProjectResponse, 0, len(projects))
 	for _, p := range projects {
 		role, _ := s.projectRepo.GetProjectMemberRole(ctx, p.ID, userID)
+		stats, _ := s.projectRepo.GetProjectStats(ctx, p.ID)
+		completionRate := 0
+		if stats != nil {
+			completionRate = stats.CompletionRate
+		}
 		res = append(res, dto.ProjectResponse{
-			ID:          p.ID,
-			Name:        p.Name,
-			Description: p.Description,
-			OwnerID:     p.OwnerID,
-			Role:        string(role),
-			CreatedAt:   p.CreatedAt.Format(time.RFC3339),
+			ID:             p.ID,
+			Name:           p.Name,
+			Description:    p.Description,
+			OwnerID:        p.OwnerID,
+			Role:           string(role),
+			CreatedAt:      p.CreatedAt.Format(time.RFC3339),
+			CompletionRate: completionRate,
 		})
 	}
 	return res, nil

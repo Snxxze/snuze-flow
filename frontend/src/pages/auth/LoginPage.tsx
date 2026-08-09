@@ -32,10 +32,10 @@ export const LoginPage: React.FC = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-canvas p-6">
-      <div className="w-full max-w-md rounded-xl border border-surface-border bg-surface p-8 shadow-sm">
+      <div className="w-full max-w-md rounded border border-surface-border bg-surface p-8 shadow-sm">
         <div className="flex flex-col items-center text-center">
           {/* Wave Logo */}
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-charcoal shadow-sm">
+          <div className="flex h-12 w-12 items-center justify-center rounded bg-charcoal shadow-sm">
             <svg width="28" height="28" viewBox="0 0 26 26" fill="none">
               <path
                 d="M2 15C5 9 8 21 11 15C14 9 17 21 20 15C21.5 12 23.5 12 24 13"
@@ -51,7 +51,7 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {error && (
-          <div className="mt-4 rounded-md bg-status-danger/10 p-3 text-xs font-medium text-status-danger border border-status-danger/20">
+          <div className="mt-4 rounded bg-status-danger/10 p-3 text-xs font-medium text-status-danger border border-status-danger/20">
             {error}
           </div>
         )}

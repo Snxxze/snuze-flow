@@ -30,8 +30,9 @@ type ProjectResponse struct {
 	Description string                  `json:"description"`
 	OwnerID     string                  `json:"ownerId"`
 	Role        string                  `json:"role,omitempty"` // Role of current requesting user
-	CreatedAt   string                  `json:"createdAt"`
-	Members     []ProjectMemberResponse `json:"members,omitempty"`
+	CreatedAt      string                  `json:"createdAt"`
+	CompletionRate int                     `json:"completionRate"`
+	Members        []ProjectMemberResponse `json:"members,omitempty"`
 }
 
 type InviteMemberRequest struct {

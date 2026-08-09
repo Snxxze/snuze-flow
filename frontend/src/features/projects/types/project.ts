@@ -16,6 +16,7 @@ export const projectSchema = z.object({
   ownerId: z.string().uuid(),
   role: z.enum(['owner', 'member']).optional(),
   createdAt: z.string(),
+  completionRate: z.number().optional(),
   members: z.array(projectMemberSchema).optional(),
 });
 

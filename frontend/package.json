@@ -9,6 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:locales": "node scripts/check-locales.cjs",
     "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "gen:api": "cd .. && swag init -g backend/cmd/api/main.go -o ./docs/api --outputTypes yaml && npx openapi-typescript ./docs/api/swagger.yaml -o ./frontend/src/types/api.generated.ts"
   },
   "dependencies": {
@@ -23,10 +25,12 @@
     "axios": "^1.6.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^3.6.0",
     "i18next": "^26.3.6",
     "lucide-react": "^0.359.0",
     "radix-ui": "^1.6.7",
     "react": "^18.2.0",
+    "react-day-picker": "^8.10.2",
     "react-dom": "^18.2.0",
     "react-i18next": "^17.0.11",
     "react-router-dom": "^6.22.3",
@@ -38,12 +42,18 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.3",
     "@types/node": "^20.11.30",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",
+    "jsdom": "^30.0.1",
     "postcss": "^8.4.38",
     "typescript": "^5.2.2",
-    "vite": "^5.1.6"
+    "vite": "^5.1.6",
+    "vitest": "^4.1.10"
   }
 }

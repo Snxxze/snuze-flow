@@ -127,6 +127,7 @@
     "sort_priority_desc": "Priority (High to Low)",
     "sort_created_at_desc": "Created Date (newest first)",
     "view_board": "Board",
+    "view_list": "List",
     "view_table": "Table",
     "empty_filtered": "No tasks match the selected filters."
   },

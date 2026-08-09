@@ -8,9 +8,9 @@ export const RegisterPage: React.FC = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-canvas p-6 text-charcoal">
-      <div className="w-full max-w-md rounded-xl border border-surface-border bg-surface p-8 shadow-sm text-center">
+      <div className="w-full max-w-md rounded border border-surface-border bg-surface p-8 shadow-sm text-center">
         {/* Wave Logo */}
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-charcoal shadow-sm">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded bg-charcoal shadow-sm">
           <svg width="28" height="28" viewBox="0 0 26 26" fill="none">
             <path
               d="M2 15C5 9 8 21 11 15C14 9 17 21 20 15C21.5 12 23.5 12 24 13"
@@ -33,7 +33,7 @@ export const RegisterPage: React.FC = () => {
           ขณะนี้ SnuzeFlow อยู่ในช่วงทดสอบแบบเฉพาะกลุ่ม บัญชีผู้ใช้งานจะได้รับจัดสรรโดยตรงจากทีมงานผู้พัฒนาเท่านั้น
         </p>
 
-        <div className="mt-6 rounded-lg border border-surface-border bg-canvas p-4 text-left text-xs text-charcoal-subtle space-y-2">
+        <div className="mt-6 rounded border border-surface-border bg-canvas p-4 text-left text-xs text-charcoal-subtle space-y-2">
           <p className="font-semibold text-charcoal">มีบัญชีที่ได้รับจัดสรรแล้ว?</p>
           <p className="text-[11px]">
             หากคุณได้รับ Username / Password จากทีมงานแล้ว สามารถกดปุ่มด้านล่างเพื่อเข้าสู่ระบบได้ทันที

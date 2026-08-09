@@ -1,8 +1,9 @@
-# SnuzeFlow — Development Checklist 
+# SnuzeFlow — Development Checklist
 
 ---
 
 ## 1. Frontend & Design System Constraints
+
 - [ ] **Color Palette (60-30-10 Rule)**:
   - 60% Canvas: `#fbfaf5` (Warm Cream White)
   - 30% Surface/Text: `#ffffff` (Cards), `#e5e3d7` (Border), `#333333` (Text Primary), `#666666` (Subtext)
@@ -16,8 +17,9 @@
 ---
 
 ## 2. Backend Architecture Constraints (Go + Gin)
+
 - [ ] **Interface Placement Rule**: "Accept interfaces, return structs" เปิดประกาศ Interface ที่ package ฝั่งคนเรียกใช้ (Consumer) เท่านั้น ห้ามเปิดใน `repository` package
-- [ ] **3-Model Isolation**: 
+- [ ] **3-Model Isolation**:
   - `DTO` (`json`, `binding` tags)
   - `Domain Model` (Pure Go struct, **Zero tags**)
   - `DB Model` (`db` tags)
@@ -30,6 +32,7 @@
 ---
 
 ## 3. Database & Performance Constraints (Neon Postgres)
+
 - [ ] **Naming Conventions**: Table พหูพจน์ `snake_case`, Columns `snake_case`, Primary Key `UUID` (ชื่อ `id`), Foreign Keys `[table]_id`
 - [ ] **Query Performance**: **ห้ามวนลูปยิง Query แบบ N+1** ให้ใช้ `LEFT JOIN` + `JSON_AGG` รวม Tasks + Subtasks ใน 1 Query
 - [ ] **Mandatory Indexes**: สร้าง Index บน `project_id`, `user_id`, `task_id`, `due_date`, `status` ตั้งแต่วันแรก
@@ -38,12 +41,13 @@
 ---
 
 ## 4. API Contract Pipeline
+
 - [ ] สั่งรัน `make gen-api` หรือ `npm run gen:api` (`swag init` $\rightarrow$ `openapi-typescript`) ทุกครั้งที่มีการแก้ DTO/Handler
 
 ---
 
 ## 5. Git Branching & Release Pipeline
+
 - [ ] **Branch Structure**: `main` (Production only), `develop` (Integration/Staging), `feature/*` (Feature development)
 - [ ] **Commit Standard**: ใช้ Conventional Commits (`feat:`, `fix:`, `refactor:`, `docs:`, `chore:`)
 - [ ] **PR Verification**: ห้าม Push ตรงเข้า `main` ทุกอย่างต้องผ่าน Pull Request และรัน Type Check (`npx tsc --noEmit`) ผ่านก่อน Merge
-

@@ -25,12 +25,14 @@ type TaskRepository interface {
 type TaskService struct {
 	taskRepo    TaskRepository
 	projectRepo ProjectRepository
+	userRepo    UserRepository
 }
 
-func NewTaskService(taskRepo TaskRepository, projectRepo ProjectRepository) *TaskService {
+func NewTaskService(taskRepo TaskRepository, projectRepo ProjectRepository, userRepo UserRepository) *TaskService {
 	return &TaskService{
 		taskRepo:    taskRepo,
 		projectRepo: projectRepo,
+		userRepo:    userRepo,
 	}
 }
 
@@ -51,6 +53,14 @@ func (s *TaskService) CreateTask(ctx context.Context, projectID, userID string, 
 		Status:      domain.TaskStatusTodo,
 		Priority:    domain.TaskPriority(req.Priority),
 		AssigneeID:  req.AssigneeID,
+	}
+
+	if req.AssigneeID != nil && *req.AssigneeID != "" {
+		if user, err := s.userRepo.GetByID(ctx, *req.AssigneeID); err == nil && user != nil {
+			task.AssigneeEmail = user.Email
+			task.AssigneeUsername = user.Username
+			task.AssigneeDisplayName = user.DisplayName
+		}
 	}
 
 	if req.DueDate != nil && *req.DueDate != "" {
