@@ -58,8 +58,9 @@ export const LoginPage: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
-            <label className="block text-xs font-medium text-charcoal mb-1">{t('auth.email_label')}</label>
+            <label htmlFor="email" className="block text-xs font-medium text-charcoal mb-1">{t('auth.email_label')}</label>
             <Input
+              id="email"
               type="email"
               required
               value={email}
@@ -69,8 +70,9 @@ export const LoginPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-charcoal mb-1">{t('auth.password_label')}</label>
+            <label htmlFor="password" className="block text-xs font-medium text-charcoal mb-1">{t('auth.password_label')}</label>
             <Input
+              id="password"
               type="password"
               required
               value={password}

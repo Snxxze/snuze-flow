@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { InvitationBanner } from '@/components/projects/InvitationBanner';
 import { projectService } from '@/features/projects/services/projectService';
 import { Project, ProjectInvitation } from '@/features/projects/types/project';
 import { FolderKanban, ArrowRight, ShieldCheck, User } from 'lucide-react';
@@ -91,30 +90,14 @@ export const ProjectListPage: React.FC = () => {
 
   return (
     <AppLayout
-      pendingInvitationsCount={invitations.length}
+      invitations={invitations}
+      onAcceptInvitation={handleAcceptInv}
+      onRejectInvitation={handleRejectInv}
+      onRefreshNotifications={fetchData}
       recentProjects={recentProjects}
       currentPageTitle={t('project.list_title')}
       onCreateProject={() => setShowModal(true)}
     >
-      {/* Section 0: Invitation Banner (ถ้ามีคำเชิญค้างอยู่) */}
-      {invitations.length > 0 && (
-        <div className="border-b border-surface-border bg-surface px-6 py-2.5 flex items-center justify-between animate-slidedown">
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-charcoal-subtle">
-              <span className="font-semibold text-charcoal">
-                {t('project.invite_count_label', { count: invitations.length })}
-              </span>{' '}
-              {t('project.invite_pending_msg')}
-            </span>
-          </div>
-          <InvitationBanner
-            invitations={invitations}
-            onAccept={handleAcceptInv}
-            onReject={handleRejectInv}
-          />
-        </div>
-      )}
-
       <div className="px-6 py-7 sm:px-8 lg:px-10">
 
         {/* Section 1: Hero Banner */}

@@ -1,26 +1,22 @@
 import { test, expect } from '@playwright/test';
-import { loginAsOwner } from './helpers/auth';
 
 test.describe('E2E-04: Overdue Deadline Alert Scoped Verification', () => {
   test('creates specific task with past due date and verifies overdue alert badge on that exact card', async ({ page }) => {
-    // 1. Synchronized Login
-    await loginAsOwner(page);
-
-    // 2. Go to projects list and open first project
+    // 1. Go to projects list and open first project
     await page.goto('/projects');
     await expect(page).toHaveURL(/\/projects/);
 
     const firstProjectLink = page.locator('a[href^="/projects/"]').first();
     await firstProjectLink.waitFor({ state: 'visible', timeout: 10000 });
     await firstProjectLink.click();
-    await page.waitForURL(/\/projects\/[a-f0-9-]+/);
+    await expect(page).toHaveURL(/\/projects\/[a-f0-9-]+/);
 
-    // 3. Wait for project detail page load and click Create Task button
+    // 2. Wait for project detail page load and click Create Task button
     const createTaskBtn = page.locator('button', { hasText: 'สร้างงาน' }).first();
     await createTaskBtn.waitFor({ state: 'visible', timeout: 10000 });
     await createTaskBtn.click();
 
-    // 4. Unique task identifier
+    // 3. Unique task identifier
     const uniqueTaskTitle = `E2E Overdue Task ${Date.now()}`;
 
     // Locate Radix Dialog container
@@ -63,15 +59,15 @@ test.describe('E2E-04: Overdue Deadline Alert Scoped Verification', () => {
     const createTaskResponse = await createTaskPromise;
     expect(createTaskResponse.status()).toBe(201);
 
-    // 5. SCOPED ASSERTION: Locate the EXACT task card created by this test
+    // 4. SCOPED ASSERTION: Locate the EXACT task card created by this test
     const specificTaskCard = page.locator('.group', { hasText: uniqueTaskTitle }).first();
     await expect(specificTaskCard).toBeVisible();
 
-    // 6. Assert user-visible overdue status text WITHIN this specific task card
+    // 5. Assert user-visible overdue status text WITHIN this specific task card
     const overdueBadgeText = specificTaskCard.locator('text=/เกินกำหนด|Overdue/i').first();
     await expect(overdueBadgeText).toBeVisible();
 
-    // 7. Assert red alert styling class text-status-danger on the badge
+    // 6. Assert red alert styling class text-status-danger on the badge
     const redBadgeElement = specificTaskCard.locator('.text-status-danger').first();
     await expect(redBadgeElement).toBeVisible();
   });
