@@ -1,11 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { loginAsOwner } from './helpers/auth';
 
 test.describe('E2E-03: Task Creation & Kanban Workspace Navigation', () => {
   test('creates task and navigates through project workspace', async ({ page }) => {
-    await loginAsOwner(page);
-
-    // Navigate to projects list
+    // Navigate to projects list directly with storageState
     await page.goto('/projects');
     await expect(page).toHaveURL(/\/projects/);
 

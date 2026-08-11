@@ -1,12 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { loginAsOwner } from './helpers/auth';
 
 test.describe('E2E-07: Dashboard Aggregation Check', () => {
   test('verifies personal dashboard aggregates tasks across workspaces', async ({ page }) => {
-    // Synchronized Login
-    await loginAsOwner(page);
-
-    // Navigate to Dashboard
+    // Navigate to Dashboard directly with storageState
     await page.goto('/dashboard');
     await expect(page).toHaveURL(/\/dashboard/);
 
