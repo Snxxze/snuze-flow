@@ -18,7 +18,11 @@ type Config struct {
 }
 
 func LoadConfig() *Config {
-	_ = godotenv.Load(".env.local", ".env") 
+	// โหลด .env เป็นหลักก่อน (สำหรับ Production หรือเป็นค่า Default ใน Dev)
+	_ = godotenv.Load(".env") 
+
+	// ถ้ามี .env.local (ใน Dev) ให้เอามาเขียนทับค่าจาก .env
+	_ = godotenv.Overload(".env.local")
 
 	port := os.Getenv("PORT")
 	if port == "" {
