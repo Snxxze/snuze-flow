@@ -26,3 +26,5 @@ dist-ssr
 # Playwright Test Outputs
 test-results/
 playwright-report/
+playwright/.auth/
+.auth/

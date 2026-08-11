@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Sidebar } from './Sidebar';
-import { Bell, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Project } from '@/features/projects/types/project';
+import { Project, ProjectInvitation } from '@/features/projects/types/project';
+import { NotificationCenter } from './NotificationCenter';
 
 interface AppLayoutProps {
   children: React.ReactNode;
   pendingInvitationsCount?: number;
+  invitations?: ProjectInvitation[];
+  onAcceptInvitation?: (id: string) => Promise<void>;
+  onRejectInvitation?: (id: string) => Promise<void>;
+  onRefreshNotifications?: () => void;
   recentProjects?: Project[];
   currentPageTitle?: string;
   onCreateProject?: () => void;
@@ -16,7 +20,10 @@ interface AppLayoutProps {
 
 export const AppLayout: React.FC<AppLayoutProps> = ({
   children,
-  pendingInvitationsCount = 0,
+  invitations,
+  onAcceptInvitation,
+  onRejectInvitation,
+  onRefreshNotifications,
   recentProjects = [],
   currentPageTitle,
   onCreateProject,
@@ -65,7 +72,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               )}
             </div>
 
-            {/* Right: Search Input + Notification Bell */}
+            {/* Right: Search Input + Notification Center Bell */}
             <div className="flex items-center gap-3">
               <div className="relative hidden sm:block">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-charcoal-subtle z-10" />
@@ -76,14 +83,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
                 />
               </div>
 
-              <Link to="/projects" className="relative p-1.5 text-charcoal-subtle hover:text-charcoal transition-colors">
-                <Bell className="h-4 w-4" />
-                {pendingInvitationsCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2 items-center justify-center rounded-full bg-status-danger">
-                    <span className="animate-ping absolute h-full w-full rounded-full bg-status-danger opacity-75" />
-                  </span>
-                )}
-              </Link>
+              <NotificationCenter
+                invitations={invitations}
+                onAcceptInvitation={onAcceptInvitation}
+                onRejectInvitation={onRejectInvitation}
+                onRefresh={onRefreshNotifications}
+              />
             </div>
           </div>
         </header>

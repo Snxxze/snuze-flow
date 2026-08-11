@@ -139,5 +139,12 @@
     "settings": "Settings",
     "lang_th": "TH",
     "lang_en": "EN"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "bell_aria_label": "Notifications",
+    "mark_read": "Mark as read",
+    "empty_title": "No new notifications",
+    "empty_desc": "All your project invitations and alert messages will appear here"
   }
 }
