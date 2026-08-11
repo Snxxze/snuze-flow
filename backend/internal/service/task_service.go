@@ -204,5 +204,12 @@ func (s *TaskService) mapTaskToResponse(t *domain.Task) *dto.TaskResponse {
 		}
 	}
 
+	if t.SubtaskTotalCount > 0 {
+		res.SubtaskStats = &dto.SubtaskStatsResponse{
+			TotalCount:     t.SubtaskTotalCount,
+			CompletedCount: t.SubtaskCompletedCount,
+		}
+	}
+
 	return res
 }

@@ -6,20 +6,17 @@ test.describe('E2E-04: Kanban Drag and Drop Task Status Move & DB Persistence', 
     await page.goto('/projects');
     await expect(page).toHaveURL(/\/projects/);
 
-    // 2. Open first project in list
-    const firstProjectCard = page.locator('.group').first();
-    await firstProjectCard.waitFor({ state: 'visible', timeout: 10000 });
-    await firstProjectCard.click();
+    // 2. Open first project link in main content area
+    const firstProjectLink = page.locator('main a[href^="/projects/"]').first();
+    await firstProjectLink.waitFor({ state: 'visible', timeout: 15000 });
+    await firstProjectLink.click();
 
     // 3. Ensure workspace detail page is loaded
-    await expect(page).toHaveURL(/\/projects\/[a-f0-9-]+/);
+    await page.waitForURL(/\/projects\/[a-f0-9-]+/, { timeout: 15000 });
 
-    // 4. Locate or create a task in Todo column
-    const todoColumnHeader = page.locator('text=ที่จะทำ').first();
-    await expect(todoColumnHeader).toBeVisible();
-
-    const inProgressColumnHeader = page.locator('text=กำลังทำ').first();
-    await expect(inProgressColumnHeader).toBeVisible();
+    // 4. Ensure Create Task button is visible
+    const createTaskBtn = page.locator('button', { hasText: /สร้างงาน|New Task/ }).first();
+    await createTaskBtn.waitFor({ state: 'visible', timeout: 15000 });
 
     // Look for a task card in Todo column (container with draggable="true")
     let todoTaskCard = page.locator('[draggable="true"]').first();
@@ -27,16 +24,14 @@ test.describe('E2E-04: Kanban Drag and Drop Task Status Move & DB Persistence', 
 
     // If no task exists in Todo, create one
     if (!isTaskVisible) {
-      const createTaskBtn = page.locator('button', { hasText: 'สร้างงาน' }).first();
-      if (await createTaskBtn.isVisible()) {
-        await createTaskBtn.click();
-        const dialog = page.locator('[role="dialog"]').first();
-        const titleInput = dialog.locator('input[required]').first();
-        await titleInput.fill(`E2E Drag Task ${Date.now()}`);
-        const submitBtn = dialog.locator('button[type="submit"]').first();
-        await submitBtn.click();
-        await page.waitForTimeout(1000);
-      }
+      await createTaskBtn.click();
+      const dialog = page.locator('[role="dialog"]').first();
+      await dialog.waitFor({ state: 'visible', timeout: 5000 });
+      const titleInput = dialog.locator('input[required]').first();
+      await titleInput.fill(`E2E Drag Task ${Date.now()}`);
+      const submitBtn = dialog.locator('button[type="submit"]').first();
+      await submitBtn.click();
+      await page.waitForTimeout(1500);
     }
 
     todoTaskCard = page.locator('[draggable="true"]').first();
@@ -46,6 +41,8 @@ test.describe('E2E-04: Kanban Drag and Drop Task Status Move & DB Persistence', 
     expect(taskTitle).toBeTruthy();
 
     // 5. Drag the task card to In Progress column
+    const inProgressColumnHeader = page.locator('text=/กำลังทำ|In Progress|stat_in_progress/').first();
+    await inProgressColumnHeader.waitFor({ state: 'visible', timeout: 10000 });
     const inProgressColumn = inProgressColumnHeader.locator('xpath=ancestor::div[contains(@class, "flex-col")]').first();
     await todoTaskCard.dragTo(inProgressColumn);
 

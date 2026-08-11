@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Task } from '@/features/tasks/types/task';
-import { useInlineSubtasks } from '@/features/subtasks/hooks/useInlineSubtasks';
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Task } from "@/features/tasks/types/task";
+import { useInlineSubtasks } from "@/features/subtasks/hooks/useInlineSubtasks";
 import {
   Calendar,
   Trash2,
@@ -14,19 +14,22 @@ import {
   Plus,
   Loader2,
   CornerDownRight,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 interface TaskListViewProps {
   tasks: Task[];
-  onStatusChange: (taskId: string, newStatus: 'todo' | 'in_progress' | 'done') => Promise<void>;
+  onStatusChange: (
+    taskId: string,
+    newStatus: "todo" | "in_progress" | "done",
+  ) => Promise<void>;
   onDeleteTask: (taskId: string) => Promise<void>;
   onSelectTask?: (task: Task) => void;
   onSubtasksUpdated?: () => void;
@@ -40,8 +43,12 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
   onSubtasksUpdated,
 }) => {
   const { t, i18n } = useTranslation();
-  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
-  const [newSubtaskTitles, setNewSubtaskTitles] = useState<Record<string, string>>({});
+  const [collapsedGroups, setCollapsedGroups] = useState<
+    Record<string, boolean>
+  >({});
+  const [newSubtaskTitles, setNewSubtaskTitles] = useState<
+    Record<string, string>
+  >({});
 
   const {
     expandedTasks,
@@ -62,37 +69,45 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
 
   const handleAddSubtaskSubmit = async (taskId: string, e: React.FormEvent) => {
     e.preventDefault();
-    const title = newSubtaskTitles[taskId] || '';
+    const title = newSubtaskTitles[taskId] || "";
     if (!title.trim()) return;
 
     await createSubtask(taskId, title, onSubtasksUpdated);
-    setNewSubtaskTitles((prev) => ({ ...prev, [taskId]: '' }));
+    setNewSubtaskTitles((prev) => ({ ...prev, [taskId]: "" }));
   };
 
-  const groups: { id: 'todo' | 'in_progress' | 'done'; title: string; color: string }[] = [
-    { id: 'todo', title: t('project.stat_todo'), color: 'bg-charcoal/40' },
-    { id: 'in_progress', title: t('project.stat_in_progress'), color: 'bg-ocean' },
-    { id: 'done', title: t('project.stat_completed'), color: 'bg-status-done' },
+  const groups: {
+    id: "todo" | "in_progress" | "done";
+    title: string;
+    color: string;
+  }[] = [
+    { id: "todo", title: t("project.stat_todo"), color: "bg-charcoal/40" },
+    {
+      id: "in_progress",
+      title: t("project.stat_in_progress"),
+      color: "bg-ocean",
+    },
+    { id: "done", title: t("project.stat_completed"), color: "bg-status-done" },
   ];
 
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
-      case 'high':
+      case "high":
         return (
           <span className="rounded-full bg-status-danger/10 px-2 py-0.5 text-[10px] font-semibold text-status-danger">
-            {t('task.priority_high')}
+            {t("task.priority_high")}
           </span>
         );
-      case 'medium':
+      case "medium":
         return (
           <span className="rounded-full bg-status-warning/10 px-2 py-0.5 text-[10px] font-semibold text-status-warning">
-            {t('task.priority_medium')}
+            {t("task.priority_medium")}
           </span>
         );
       default:
         return (
           <span className="rounded-full bg-charcoal/10 px-2 py-0.5 text-[10px] font-medium text-charcoal-subtle">
-            {t('task.priority_low')}
+            {t("task.priority_low")}
           </span>
         );
     }
@@ -109,14 +124,16 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
       return (
         <span className="inline-flex items-center space-x-1 rounded-md bg-status-danger/10 px-2 py-0.5 text-[10px] font-semibold text-status-danger border border-status-danger/20">
           <AlertTriangle className="h-3 w-3" />
-          <span>{t('task.due_date_overdue', { days: Math.abs(diffDays) })}</span>
+          <span>
+            {t("task.due_date_overdue", { days: Math.abs(diffDays) })}
+          </span>
         </span>
       );
     } else if (diffDays <= 3) {
       return (
         <span className="inline-flex items-center space-x-1 rounded-md bg-status-warning/10 px-2 py-0.5 text-[10px] font-semibold text-status-warning border border-status-warning/20">
           <Calendar className="h-3 w-3" />
-          <span>{t('task.due_date_days_left', { days: diffDays })}</span>
+          <span>{t("task.due_date_days_left", { days: diffDays })}</span>
         </span>
       );
     } else {
@@ -124,10 +141,13 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
         <span className="inline-flex items-center space-x-1 text-[10px] text-charcoal-subtle">
           <Calendar className="h-3 w-3 text-charcoal-subtle" />
           <span>
-            {due.toLocaleDateString(i18n.language === 'th' ? 'th-TH' : 'en-US', {
-              month: 'short',
-              day: 'numeric',
-            })}
+            {due.toLocaleDateString(
+              i18n.language === "th" ? "th-TH" : "en-US",
+              {
+                month: "short",
+                day: "numeric",
+              },
+            )}
           </span>
         </span>
       );
@@ -139,15 +159,19 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
       <div onClick={(e) => e.stopPropagation()} className="shrink-0">
         <Select
           value={task.status}
-          onValueChange={(val) => onStatusChange(task.id, val as 'todo' | 'in_progress' | 'done')}
+          onValueChange={(val) =>
+            onStatusChange(task.id, val as "todo" | "in_progress" | "done")
+          }
         >
           <SelectTrigger className="h-7 w-[115px] text-[11px] font-semibold border-surface-border bg-surface shadow-2xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="todo">{t('project.stat_todo')}</SelectItem>
-            <SelectItem value="in_progress">{t('project.stat_in_progress')}</SelectItem>
-            <SelectItem value="done">{t('project.stat_completed')}</SelectItem>
+            <SelectItem value="todo">{t("project.stat_todo")}</SelectItem>
+            <SelectItem value="in_progress">
+              {t("project.stat_in_progress")}
+            </SelectItem>
+            <SelectItem value="done">{t("project.stat_completed")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -157,7 +181,7 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
   if (tasks.length === 0) {
     return (
       <p className="py-6 text-center text-xs text-charcoal-subtle/50">
-        {t('kanban.empty_filtered')}
+        {t("kanban.empty_filtered")}
       </p>
     );
   }
@@ -169,7 +193,10 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
         const isCollapsed = collapsedGroups[group.id];
 
         return (
-          <div key={group.id} className="border-b border-surface-border last:border-b-0">
+          <div
+            key={group.id}
+            className="border-b border-surface-border last:border-b-0"
+          >
             {/* Section Header */}
             <div
               onClick={() => toggleGroup(group.id)}
@@ -181,8 +208,12 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
                 <ChevronDown className="h-3.5 w-3.5 text-charcoal-subtle" />
               )}
               <span className={`h-2 w-2 rounded-full ${group.color}`} />
-              <span className="text-xs font-semibold text-charcoal">{group.title}</span>
-              <span className="text-xs text-charcoal-subtle">{groupTasks.length}</span>
+              <span className="text-xs font-semibold text-charcoal">
+                {group.title}
+              </span>
+              <span className="text-xs text-charcoal-subtle">
+                {groupTasks.length}
+              </span>
             </div>
 
             {/* Tasks List */}
@@ -194,7 +225,7 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
                   </p>
                 ) : (
                   groupTasks.map((task) => {
-                    const isDone = task.status === 'done';
+                    const isDone = task.status === "done";
                     const isTaskExpanded = !!expandedTasks[task.id];
                     const subtaskItems = subtasksMap[task.id] || [];
                     const isSubtaskLoading = !!loadingTasks[task.id];
@@ -215,7 +246,11 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
                                 toggleTaskExpanded(task.id);
                               }}
                               className="p-1 rounded hover:bg-surface border border-transparent hover:border-surface-border transition-colors text-charcoal-subtle hover:text-ocean shrink-0"
-                              title={isTaskExpanded ? 'ย่อรายการย่อย' : 'ขยายรายการย่อย'}
+                              title={
+                                isTaskExpanded
+                                  ? "ย่อรายการย่อย"
+                                  : "ขยายรายการย่อย"
+                              }
                             >
                               {isSubtaskLoading ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin text-ocean" />
@@ -234,8 +269,8 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
                               <span
                                 className={`font-medium leading-tight block truncate transition-colors ${
                                   isDone
-                                    ? 'text-charcoal-subtle line-through'
-                                    : 'text-charcoal group-hover:text-ocean'
+                                    ? "text-charcoal-subtle line-through"
+                                    : "text-charcoal group-hover:text-ocean"
                                 }`}
                               >
                                 {task.title}
@@ -261,15 +296,15 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
                               }}
                               className={`inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-semibold border transition-colors ${
                                 isTaskExpanded
-                                  ? 'bg-ocean/10 text-ocean border-ocean/30'
-                                  : 'bg-canvas text-charcoal-subtle border-surface-border hover:bg-surface'
+                                  ? "bg-ocean/10 text-ocean border-ocean/30"
+                                  : "bg-canvas text-charcoal-subtle border-surface-border hover:bg-surface"
                               }`}
                             >
                               <CheckSquare className="h-3 w-3 text-ocean" />
                               <span>
                                 {task.subtaskStats
                                   ? `${task.subtaskStats.completedCount}/${task.subtaskStats.totalCount}`
-                                  : '0/0'}
+                                  : "0/0"}
                               </span>
                             </button>
 
@@ -278,12 +313,14 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
                                 className="flex h-5 w-5 items-center justify-center rounded-full bg-ocean/10 text-[9px] font-bold text-ocean"
                                 title={task.assignee.displayName}
                               >
-                                {task.assignee.displayName.charAt(0).toUpperCase()}
+                                {task.assignee.displayName
+                                  .charAt(0)
+                                  .toUpperCase()}
                               </span>
                             ) : (
                               <span
                                 className="flex h-5 w-5 items-center justify-center rounded-full bg-canvas text-charcoal-subtle border border-surface-border"
-                                title={t('task.unassigned')}
+                                title={t("task.unassigned")}
                               >
                                 <User className="h-3 w-3" />
                               </span>
@@ -295,7 +332,7 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
                                 onDeleteTask(task.id);
                               }}
                               className="opacity-0 group-hover:opacity-100 p-1 text-charcoal-subtle hover:text-status-danger transition-opacity"
-                              title={t('common.delete')}
+                              title={t("common.delete")}
                             >
                               <Trash2 className="h-3.5 w-3.5" />
                             </button>
@@ -308,7 +345,7 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
                             {isSubtaskLoading ? (
                               <div className="flex items-center space-x-2 text-xs text-charcoal-subtle py-1">
                                 <Loader2 className="h-3.5 w-3.5 animate-spin text-ocean" />
-                                <span>{t('task.detail_subtask_loading')}</span>
+                                <span>{t("task.detail_subtask_loading")}</span>
                               </div>
                             ) : (
                               <>
@@ -324,7 +361,7 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
                                           task.id,
                                           sub.id,
                                           sub.isCompleted,
-                                          onSubtasksUpdated
+                                          onSubtasksUpdated,
                                         )
                                       }
                                       className="flex items-center space-x-2 text-left flex-1 min-w-0"
@@ -338,8 +375,8 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
                                       <span
                                         className={`truncate ${
                                           sub.isCompleted
-                                            ? 'line-through text-charcoal-subtle'
-                                            : 'text-charcoal font-medium'
+                                            ? "line-through text-charcoal-subtle"
+                                            : "text-charcoal font-medium"
                                         }`}
                                       >
                                         {sub.title}
@@ -348,10 +385,14 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
 
                                     <button
                                       onClick={() =>
-                                        deleteSubtask(task.id, sub.id, onSubtasksUpdated)
+                                        deleteSubtask(
+                                          task.id,
+                                          sub.id,
+                                          onSubtasksUpdated,
+                                        )
                                       }
                                       className="opacity-0 group-hover/sub:opacity-100 p-0.5 text-charcoal-subtle hover:text-status-danger transition-opacity"
-                                      title={t('common.delete')}
+                                      title={t("common.delete")}
                                     >
                                       <Trash2 className="h-3 w-3" />
                                     </button>
@@ -360,14 +401,18 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
 
                                 {/* Quick Subtask Form */}
                                 <form
-                                  onSubmit={(e) => handleAddSubtaskSubmit(task.id, e)}
+                                  onSubmit={(e) =>
+                                    handleAddSubtaskSubmit(task.id, e)
+                                  }
                                   className="flex items-center space-x-2 pt-1"
                                 >
                                   <CornerDownRight className="h-3 w-3 text-ocean shrink-0" />
                                   <Input
                                     type="text"
-                                    placeholder={t('task.detail_subtask_placeholder')}
-                                    value={newSubtaskTitles[task.id] || ''}
+                                    placeholder={t(
+                                      "task.detail_subtask_placeholder",
+                                    )}
+                                    value={newSubtaskTitles[task.id] || ""}
                                     onChange={(e) =>
                                       setNewSubtaskTitles((prev) => ({
                                         ...prev,
@@ -378,9 +423,11 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
                                   />
                                   <button
                                     type="submit"
-                                    disabled={!newSubtaskTitles[task.id]?.trim()}
+                                    disabled={
+                                      !newSubtaskTitles[task.id]?.trim()
+                                    }
                                     className="p-1 rounded bg-ocean/10 text-ocean hover:bg-ocean hover:text-white transition-colors disabled:opacity-30 disabled:hover:bg-ocean/10 disabled:hover:text-ocean"
-                                    title={t('task.detail_subtask_add_btn')}
+                                    title={t("task.detail_subtask_add_btn")}
                                   >
                                     <Plus className="h-3.5 w-3.5" />
                                   </button>

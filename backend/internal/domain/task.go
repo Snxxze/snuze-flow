@@ -33,4 +33,6 @@ type Task struct {
 	AssigneeEmail       string
 	AssigneeUsername    string
 	AssigneeDisplayName string
+	SubtaskTotalCount   int
+	SubtaskCompletedCount int
 }

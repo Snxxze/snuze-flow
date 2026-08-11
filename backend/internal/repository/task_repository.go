@@ -25,6 +25,8 @@ type TaskDB struct {
 	AssigneeEmail       sql.NullString `db:"assignee_email"`
 	AssigneeUsername    sql.NullString `db:"assignee_username"`
 	AssigneeDisplayName sql.NullString `db:"assignee_display_name"`
+	SubtaskTotalCount   sql.NullInt64  `db:"subtask_total_count"`
+	SubtaskCompletedCount sql.NullInt64 `db:"subtask_completed_count"`
 }
 
 func (t *TaskDB) ToDomain() *domain.Task {
@@ -54,6 +56,12 @@ func (t *TaskDB) ToDomain() *domain.Task {
 	}
 	if t.AssigneeDisplayName.Valid {
 		task.AssigneeDisplayName = t.AssigneeDisplayName.String
+	}
+	if t.SubtaskTotalCount.Valid {
+		task.SubtaskTotalCount = int(t.SubtaskTotalCount.Int64)
+	}
+	if t.SubtaskCompletedCount.Valid {
+		task.SubtaskCompletedCount = int(t.SubtaskCompletedCount.Int64)
 	}
 
 	return task
@@ -93,9 +101,16 @@ func (r *TaskRepository) CreateTask(ctx context.Context, task *domain.Task) erro
 func (r *TaskRepository) ListTasksByProjectID(ctx context.Context, projectID string) ([]domain.Task, error) {
 	query := `
 		SELECT t.id, t.project_id, t.title, t.description, t.status, t.priority, t.due_date, t.assignee_id, t.created_at,
-		       u.email as assignee_email, u.username as assignee_username, u.display_name as assignee_display_name
+		       u.email as assignee_email, u.username as assignee_username, u.display_name as assignee_display_name,
+		       COALESCE(st.total_count, 0) as subtask_total_count,
+		       COALESCE(st.completed_count, 0) as subtask_completed_count
 		FROM tasks t
 		LEFT JOIN users u ON t.assignee_id = u.id
+		LEFT JOIN (
+			SELECT task_id, COUNT(*) as total_count, COUNT(CASE WHEN is_completed THEN 1 END) as completed_count
+			FROM subtasks
+			GROUP BY task_id
+		) st ON t.id = st.task_id
 		WHERE t.project_id = $1
 		ORDER BY t.created_at DESC
 	`
@@ -111,6 +126,7 @@ func (r *TaskRepository) ListTasksByProjectID(ctx context.Context, projectID str
 		if err := rows.Scan(
 			&t.ID, &t.ProjectID, &t.Title, &t.Description, &t.Status, &t.Priority, &t.DueDate, &t.AssigneeID, &t.CreatedAt,
 			&t.AssigneeEmail, &t.AssigneeUsername, &t.AssigneeDisplayName,
+			&t.SubtaskTotalCount, &t.SubtaskCompletedCount,
 		); err != nil {
 			return nil, fmt.Errorf("failed to scan task row: %w", err)
 		}
